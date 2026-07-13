@@ -82,6 +82,7 @@ class TesterPage(Vertical):
         super().__init__(**kwargs)
         self.broker_manager = BrokerManager()
         self.test_client: MQTTTestClient | None = None
+        self._pending_messages: list[dict] = []
 
     def compose(self) -> ComposeResult:
         yield Label("MQTT Message Tester", classes="tester-header")
@@ -138,6 +139,7 @@ class TesterPage(Vertical):
     def on_mount(self) -> None:
         """Initialize tester."""
         self._update_connection_status()
+        self.set_interval(0.2, self._process_pending_messages)
 
     def _get_client(self) -> MQTTTestClient | None:
         """Get or create test client."""
@@ -179,19 +181,27 @@ class TesterPage(Vertical):
             label.classes = "conn-status status-disconnected"
 
     def _on_mqtt_message(self, msg: dict) -> None:
-        """Handle incoming MQTT message."""
+        """Handle incoming MQTT message from background thread."""
+        self._pending_messages.append(msg)
+
+    def _process_pending_messages(self) -> None:
+        """Process queued messages (called on main thread via set_interval)."""
+        if not self._pending_messages:
+            return
         log = self.query_one("#sub-log", Log)
-        try:
-            payload = msg["payload"]
+        for msg in self._pending_messages:
             try:
-                parsed = json.loads(payload)
-                payload = json.dumps(parsed, indent=2)
-            except (json.JSONDecodeError, TypeError):
+                payload = msg["payload"]
+                try:
+                    parsed = json.loads(payload)
+                    payload = json.dumps(parsed, indent=2)
+                except (json.JSONDecodeError, TypeError):
+                    pass
+                line = f"[{msg['timestamp'][11:19]}] {msg['topic']}: {payload}"
+                log.write(line)
+            except Exception:
                 pass
-            line = f"[{msg['timestamp'][11:19]}] {msg['topic']}: {payload}"
-            self.app.call_from_thread(log.write, line)
-        except Exception:
-            pass
+        self._pending_messages.clear()
 
     def on_button_pressed(self, event: Button.Pressed) -> None:
         """Handle button presses."""
@@ -268,5 +278,6 @@ class TesterPage(Vertical):
         elif btn_id == "clear-btn":
             log = self.query_one("#sub-log", Log)
             log.clear()
+            self._pending_messages.clear()
             if self.test_client:
                 self.test_client.clear_messages()
