@@ -1,0 +1,99 @@
+[build-system]
+requires = ["setuptools>=68.0", "wheel"]
+build-backend = "setuptools.backends._legacy:_Backend"
+
+[project]
+name = "nyamuk"
+version = "1.0.0"
+description = "Mosquitto MQTT Manager - TUI & Web Dashboard"
+readme = "README.md"
+license = {text = "MIT"}
+requires-python = ">=3.8"
+authors = [
+    {name = "Nyamuk Contributors", email = "nyamuk@example.com"}
+]
+keywords = ["mqtt", "mosquitto", "iot", "dashboard", "tui", "web"]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Developers",
+    "Intended Audience :: System Administrators",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Topic :: System :: Monitoring",
+    "Topic :: System :: Systems Administration",
+]
+dependencies = [
+    "textual>=0.40.0",
+    "rich>=13.0.0",
+    "flask>=3.0.0",
+    "flask-socketio>=5.3.0",
+    "paho-mqtt>=1.6.0",
+    "docker>=7.0.0",
+    "psutil>=5.9.0",
+    "click>=8.1.0",
+    "pydantic>=2.0.0",
+    "python-dotenv>=1.0.0",
+    "requests>=2.31.0",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=7.0.0",
+    "pytest-cov>=4.0.0",
+    "pytest-asyncio>=0.21.0",
+    "ruff>=0.1.0",
+    "mypy>=1.0.0",
+    "pre-commit>=3.0.0",
+]
+
+[project.scripts]
+nyamuk = "nyamuk.cli:main"
+
+[project.urls]
+Homepage = "https://github.com/thefulan123/nyamuk-mqtt"
+Documentation = "https://github.com/thefulan123/nyamuk-mqtt/tree/main/docs"
+Repository = "https://github.com/thefulan123/nyamuk-mqtt"
+Issues = "https://github.com/thefulan123/nyamuk-mqtt/issues"
+Changelog = "https://github.com/thefulan123/nyamuk-mqtt/blob/main/docs/CHANGELOG.md"
+
+[tool.ruff]
+line-length = 100
+target-version = "py38"
+
+[tool.ruff.lint]
+select = ["E", "F", "W", "I", "N", "UP", "B"]
+ignore = ["E501"]
+
+[tool.ruff.format]
+quote-style = "double"
+indent-style = "space"
+
+[tool.mypy]
+python_version = "3.8"
+warn_return_any = true
+warn_unused_configs = true
+ignore_missing_imports = true
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+asyncio_mode = "auto"
+addopts = "-v --cov=nyamuk"
+
+[tool.coverage.run]
+source = ["nyamuk"]
+omit = ["tests/*"]
+
+[tool.coverage.report]
+exclude_lines = [
+    "pragma: no cover",
+    "def __repr__",
+    "raise NotImplementedError",
+    "if __name__ == .__main__.",
+    "pass",
+]

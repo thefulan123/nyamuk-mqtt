@@ -1,0 +1,19 @@
+# Code Owners for Nyamuk
+# These owners will be automatically requested for review
+# when someone opens a pull request.
+
+# Default owners for everything
+* @thefulan123
+
+# Core modules
+/nyamuk/core/ @thefulan123
+
+# TUI
+/nyamuk/tui/ @thefulan123
+
+# Web
+/nyamuk/web/ @thefulan123
+
+# Documentation
+/docs/ @thefulan123
+*.md @thefulan123

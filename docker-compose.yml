@@ -1,0 +1,60 @@
+version: '3.8'
+
+services:
+  # Nyamuk Manager
+  nyamuk:
+    build: .
+    container_name: nyamuk
+    restart: unless-stopped
+    ports:
+      - "${NYAMUK_PORT:-8080}:8080"
+    volumes:
+      - nyamuk-config:/app/config
+      - /opt/mosquitto:/mosquitto:ro
+      - /var/run/docker.sock:/var/run/docker.sock
+    environment:
+      - MQTT_BROKER=mosquitto
+      - MQTT_PORT=1883
+      - NYAMUK_SECRET_KEY=${SECRET_KEY:-change-me-in-production}
+      - NYAMUK_ADMIN_USER=${ADMIN_USER:-admin}
+      - NYAMUK_ADMIN_PASS=${ADMIN_PASS:-nyamuk123}
+    depends_on:
+      mosquitto:
+        condition: service_healthy
+    networks:
+      - nyamuk-net
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8080/api/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  # Mosquitto Broker
+  mosquitto:
+    image: eclipse-mosquitto:2
+    container_name: mosquitto
+    restart: unless-stopped
+    ports:
+      - "1883:1883"
+      - "9001:9001"
+    volumes:
+      - mosquitto-config:/mosquitto/config
+      - mosquitto-data:/mosquitto/data
+      - mosquitto-log:/mosquitto/log
+    healthcheck:
+      test: ["CMD", "mosquitto_sub", "-t", "$$SYS/#", "-C", "1", "-i", "healthcheck"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+    networks:
+      - nyamuk-net
+
+volumes:
+  nyamuk-config:
+  mosquitto-config:
+  mosquitto-data:
+  mosquitto-log:
+
+networks:
+  nyamuk-net:
+    driver: bridge

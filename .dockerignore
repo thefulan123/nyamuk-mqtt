@@ -1,0 +1,46 @@
+# Git
+.git
+.gitignore
+
+# GitHub
+.github
+
+# IDE
+.vscode
+.idea
+*.swp
+*.swo
+
+# Python
+__pycache__
+*.pyc
+*.pyo
+*.pyd
+.Python
+venv
+env
+*.egg-info
+.pytest_cache
+.mypy_cache
+.ruff_cache
+htmlcov
+.coverage
+
+# Documentation
+*.md
+LICENSE
+
+# Build
+dist
+build
+*.egg
+
+# Docker
+docker-compose.yml
+.dockerignore
+
+# Tests
+tests
+
+# Examples (optional)
+examples

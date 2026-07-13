@@ -1,0 +1,17 @@
+{
+  "$schema": "https://opencode.ai/config.json",
+  "mqtt_broker": "localhost",
+  "mqtt_port": 1883,
+  "mqtt_username": null,
+  "mqtt_password": null,
+  "topic_prefix": "nyamuk",
+  "web_host": "0.0.0.0",
+  "web_port": 8080,
+  "web_secret_key": "change-me-in-production",
+  "web_admin_user": "admin",
+  "web_admin_pass": "nyamuk123",
+  "docker_container_name": "mosquitto",
+  "docker_image": "eclipse-mosquitto:2",
+  "log_level": "INFO",
+  "auto_refresh_interval": 5
+}

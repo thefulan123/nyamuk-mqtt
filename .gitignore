@@ -1,0 +1,46 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+venv/
+env/
+*.egg-info/
+dist/
+build/
+.eggs/
+*.egg
+
+# Testing
+.coverage
+htmlcov/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.project
+.settings/
+
+# Environment
+.env
+.env.local
+.env.*.local
+
+# OS
+.DS_Store
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+
+# Nyamuk specific
+config/*.db
+logs/*.log
+*.bak
+*.backup

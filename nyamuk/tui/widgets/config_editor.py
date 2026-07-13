@@ -1,0 +1,44 @@
+"""Config editor widget."""
+
+from textual.widgets import TextArea, Static, Label
+from textual.containers import Vertical
+from textual.app import ComposeResult
+
+
+class ConfigEditor(Static):
+    """Configuration file editor widget."""
+
+    CSS = """
+    ConfigEditor {
+        height: 1fr;
+        border: solid $accent;
+    }
+    .editor-header {
+        text-style: bold;
+        color: $primary;
+        margin-bottom: 1;
+    }
+    """
+
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
+        self._content = ""
+
+    def compose(self) -> ComposeResult:
+        yield Label("Configuration Editor", classes="editor-header")
+        yield TextArea(id="config-textarea", language="yaml")
+
+    def load_content(self, content: str):
+        """Load content into editor."""
+        self._content = content
+        try:
+            self.query_one("#config-textarea", TextArea).text = content
+        except Exception:
+            pass
+
+    def get_content(self) -> str:
+        """Get current editor content."""
+        try:
+            return self.query_one("#config-textarea", TextArea).text
+        except Exception:
+            return self._content

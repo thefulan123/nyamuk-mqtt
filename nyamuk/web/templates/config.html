@@ -1,0 +1,108 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="config-page">
+    <h2>Configuration</h2>
+
+    <div class="section">
+        <h3>Mosquitto Configuration</h3>
+        <pre id="config-content" class="code-block">Loading...</pre>
+
+        <div class="button-group">
+            <button id="load-config" class="btn btn-primary">Load Config</button>
+            <button id="save-config" class="btn btn-success">Save Config</button>
+            <button id="validate-config" class="btn btn-warning">Validate</button>
+        </div>
+    </div>
+
+    <div class="section">
+        <h3>Quick Settings</h3>
+        <form id="quick-config-form">
+            <div class="form-group">
+                <label for="port-input">Port</label>
+                <input type="number" id="port-input" value="1883" min="1" max="65535">
+            </div>
+            <div class="form-group">
+                <label for="anonymous-toggle">
+                    <input type="checkbox" id="anonymous-toggle" checked>
+                    Allow Anonymous
+                </label>
+            </div>
+            <div class="form-group">
+                <label for="persistence-toggle">
+                    <input type="checkbox" id="persistence-toggle" checked>
+                    Enable Persistence
+                </label>
+            </div>
+            <button type="submit" class="btn btn-primary">Apply Changes</button>
+        </form>
+    </div>
+</div>
+
+<script>
+document.getElementById('load-config').addEventListener('click', function() {
+    fetch('/api/config')
+        .then(response => response.json())
+        .then(data => {
+            document.getElementById('config-content').textContent =
+                JSON.stringify(data, null, 2);
+        });
+});
+
+document.getElementById('save-config').addEventListener('click', function() {
+    const config = JSON.parse(document.getElementById('config-content').textContent);
+    fetch('/api/config', {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify(config)
+    })
+    .then(response => response.json())
+    .then(data => {
+        alert(data.message);
+    });
+});
+
+document.getElementById('quick-config-form').addEventListener('submit', function(e) {
+    e.preventDefault();
+    const config = {
+        listener: parseInt(document.getElementById('port-input').value),
+        allow_anonymous: document.getElementById('anonymous-toggle').checked,
+        persistence: document.getElementById('persistence-toggle').checked,
+        persistence_location: '/mosquitto/data/',
+        log_dest: 'file /mosquitto/log/mosquitto.log'
+    };
+    fetch('/api/config', {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify(config)
+    })
+    .then(response => response.json())
+    .then(data => {
+        alert(data.message);
+        loadConfig();
+    });
+});
+
+function loadConfig() {
+    fetch('/api/config')
+        .then(response => response.json())
+        .then(data => {
+            document.getElementById('config-content').textContent =
+                JSON.stringify(data, null, 2);
+
+            if (data.listener) {
+                document.getElementById('port-input').value = data.listener;
+            }
+            if (data.allow_anonymous !== undefined) {
+                document.getElementById('anonymous-toggle').checked = data.allow_anonymous;
+            }
+            if (data.persistence !== undefined) {
+                document.getElementById('persistence-toggle').checked = data.persistence;
+            }
+        });
+}
+
+// Load config on page load
+loadConfig();
+</script>
+{% endblock %}
