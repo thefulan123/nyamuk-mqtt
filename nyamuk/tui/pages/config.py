@@ -1,8 +1,8 @@
-"""Configuration page - edit mosquitto.conf."""
+"""Config Page - Broker configuration editor."""
 
 from textual.app import ComposeResult
 from textual.containers import Container, Horizontal, Vertical
-from textual.widgets import Static, Label, Input, Button, Select, Switch, TextArea
+from textual.widgets import Static, Label, Input, Button, Switch, TextArea
 from textual.reactive import reactive
 
 from nyamuk.core.mosquitto import MosquittoManager
@@ -30,16 +30,13 @@ class ConfigPage(Vertical):
         margin-bottom: 1;
     }
     .config-label {
-        width: 30%;
+        width: 35%;
     }
     Input {
-        width: 70%;
-    }
-    Select {
-        width: 70%;
+        width: 65%;
     }
     Switch {
-        width: 70%;
+        width: 65%;
     }
     .button-row {
         height: 3;
@@ -58,7 +55,7 @@ class ConfigPage(Vertical):
         self.mosquitto_manager = MosquittoManager()
 
     def compose(self) -> ComposeResult:
-        yield Label("⚙️ Mosquitto Configuration", classes="config-header")
+        yield Label("⚙️ Broker Configuration", classes="config-header")
 
         with Container(classes="config-section"):
             yield Label("Network Settings", classes="section-title")
@@ -69,7 +66,7 @@ class ConfigPage(Vertical):
 
             with Horizontal(classes="config-row"):
                 yield Label("Allow Anonymous:", classes="config-label")
-                yield Switch(value=True, id="anonymous-switch")
+                yield Switch(value=False, id="anonymous-switch")
 
         with Container(classes="config-section"):
             yield Label("Persistence Settings", classes="section-title")

@@ -2,49 +2,52 @@
 
 {% block content %}
 <div class="dashboard">
-    <h2>Dashboard</h2>
+    <h2>🦟 Nyamuk - MQTT Broker</h2>
 
-    <div class="stats-grid">
-        <div class="stat-card">
-            <h3>Status</h3>
-            <p id="broker-status" class="stat-value">Loading...</p>
-        </div>
-        <div class="stat-card">
-            <h3>Uptime</h3>
-            <p id="broker-uptime" class="stat-value">N/A</p>
-        </div>
-        <div class="stat-card">
-            <h3>CPU Usage</h3>
-            <p id="cpu-usage" class="stat-value">0%</p>
-        </div>
-        <div class="stat-card">
-            <h3>Memory Usage</h3>
-            <p id="memory-usage" class="stat-value">0%</p>
+    <!-- Status Section -->
+    <div class="section">
+        <h3>Broker Status</h3>
+        <div class="status-grid">
+            <div class="stat-card">
+                <h4>Status</h4>
+                <p id="broker-status" class="stat-value">Loading...</p>
+            </div>
+            <div class="stat-card">
+                <h4>Port</h4>
+                <p id="broker-port" class="stat-value">--</p>
+            </div>
+            <div class="stat-card">
+                <h4>Created</h4>
+                <p id="broker-created" class="stat-value">--</p>
+            </div>
         </div>
     </div>
 
+    <!-- Connection Info -->
     <div class="section">
-        <h3>Connected Clients</h3>
-        <table class="data-table" id="clients-table">
-            <thead>
-                <tr>
-                    <th>Client ID</th>
-                    <th>Status</th>
-                    <th>Connected Since</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr>
-                    <td colspan="3" class="text-center">Loading...</td>
-                </tr>
-            </tbody>
-        </table>
+        <h3>Connection Info</h3>
+        <div class="connection-info">
+            <p><strong>Broker:</strong> <span id="conn-broker">--:--</span></p>
+            <p><strong>Username:</strong> <span id="conn-user">--</span></p>
+            <p><strong>Password:</strong> <span id="conn-pass">--</span></p>
+            <p><strong>Topic:</strong> <span id="conn-topic">nyamuk/#</span></p>
+        </div>
     </div>
 
+    <!-- ESP32 Config -->
     <div class="section">
-        <h3>Recent Messages</h3>
-        <div id="messages-log" class="log-container">
-            <p class="text-muted">Waiting for messages...</p>
+        <h3>ESP32 Configuration</h3>
+        <pre id="esp32-config" class="code-block">// Loading...</pre>
+        <button id="copy-btn" class="btn btn-primary">Copy to Clipboard</button>
+    </div>
+
+    <!-- Quick Actions -->
+    <div class="section">
+        <h3>Quick Actions</h3>
+        <div class="button-group">
+            <button id="start-btn" class="btn btn-success">▶ Start</button>
+            <button id="stop-btn" class="btn btn-danger">⏹ Stop</button>
+            <button id="restart-btn" class="btn btn-warning">🔄 Restart</button>
         </div>
     </div>
 </div>
@@ -61,38 +64,70 @@ socket.on('status_update', function(data) {
     updateDashboard(data);
 });
 
-socket.on('message_received', function(data) {
-    addMessage(data);
-});
-
 function updateDashboard(data) {
     const status = data.status;
-    const stats = data.stats;
+    const conn = data.connection;
 
+    // Update status
     document.getElementById('broker-status').textContent =
-        status.status === 'running' ? '✅ Running' : '❌ Stopped';
+        status.status === 'running' ? '🟢 Running' : '🔴 ' + status.status;
+    document.getElementById('broker-port').textContent = status.port || '--';
+    document.getElementById('broker-created').textContent =
+        status.created_at ? status.created_at.substring(0, 19) : '--';
 
-    document.getElementById('cpu-usage').textContent =
-        stats.cpu_percent ? stats.cpu_percent + '%' : 'N/A';
-
-    document.getElementById('memory-usage').textContent =
-        stats.memory_percent ? stats.memory_percent + '%' : 'N/A';
-}
-
-function addMessage(data) {
-    const log = document.getElementById('messages-log');
-    const entry = document.createElement('div');
-    entry.className = 'log-entry';
-    entry.innerHTML = `<span class="log-time">${data.timestamp}</span> ` +
-                     `<span class="log-topic">${data.topic}</span> ` +
-                     `<span class="log-payload">${data.payload}</span>`;
-    log.insertBefore(entry, log.firstChild);
-
-    // Keep only last 50 messages
-    while (log.children.length > 50) {
-        log.removeChild(log.lastChild);
+    // Update connection info
+    if (conn && conn.broker) {
+        document.getElementById('conn-broker').textContent = conn.broker;
+        document.getElementById('conn-user').textContent = conn.username;
+        document.getElementById('conn-pass').textContent = conn.password;
+        document.getElementById('conn-topic').textContent = conn.topic_prefix + '/#';
     }
 }
+
+// Load ESP32 config
+fetch('/api/esp32')
+    .then(response => response.json())
+    .then(data => {
+        if (data.snippet) {
+            document.getElementById('esp32-config').textContent = data.snippet;
+        }
+    });
+
+// Copy to clipboard
+document.getElementById('copy-btn').addEventListener('click', function() {
+    const config = document.getElementById('esp32-config').textContent;
+    navigator.clipboard.writeText(config).then(() => {
+        alert('Copied to clipboard!');
+    });
+});
+
+// Quick actions
+document.getElementById('start-btn').addEventListener('click', function() {
+    fetch('/api/broker/start', { method: 'POST' })
+        .then(response => response.json())
+        .then(data => {
+            alert(data.message);
+            socket.emit('request_status');
+        });
+});
+
+document.getElementById('stop-btn').addEventListener('click', function() {
+    fetch('/api/broker/stop', { method: 'POST' })
+        .then(response => response.json())
+        .then(data => {
+            alert(data.message);
+            socket.emit('request_status');
+        });
+});
+
+document.getElementById('restart-btn').addEventListener('click', function() {
+    fetch('/api/broker/restart', { method: 'POST' })
+        .then(response => response.json())
+        .then(data => {
+            alert(data.message);
+            socket.emit('request_status');
+        });
+});
 
 // Refresh status every 5 seconds
 setInterval(function() {

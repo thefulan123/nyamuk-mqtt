@@ -1,4 +1,4 @@
-"""ACL page - Access Control List management."""
+"""ACL Page - Access Control List management."""
 
 from textual.app import ComposeResult
 from textual.containers import Container, Horizontal, Vertical

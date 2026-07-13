@@ -1,4 +1,4 @@
-"""Web Dashboard for Nyamuk MQTT Manager."""
+"""Web Dashboard for Nyamuk MQTT Manager - v2.0."""
 
 from flask import Flask, render_template, request, jsonify, session, redirect, url_for
 from flask_socketio import SocketIO, emit
@@ -7,11 +7,11 @@ import os
 from functools import wraps
 from datetime import datetime
 
-from nyamuk.core.docker_manager import DockerManager
-from nyamuk.core.mosquitto import MosquittoManager
+from nyamuk.core.broker_manager import BrokerManager
 from nyamuk.core.user_manager import UserManager
 from nyamuk.core.acl_manager import ACLManager
 from nyamuk.core.log_parser import LogParser
+from nyamuk.core.provisioning import ESP32Provisioning
 
 
 def create_app(config: dict = None) -> Flask:
@@ -34,8 +34,7 @@ def create_app(config: dict = None) -> Flask:
     socketio = SocketIO(app, cors_allowed_origins="*", async_mode="threading")
 
     # Initialize managers
-    docker_manager = DockerManager()
-    mosquitto_manager = MosquittoManager()
+    broker_manager = BrokerManager()
     user_manager = UserManager()
     acl_manager = ACLManager()
     log_parser = LogParser()
@@ -73,35 +72,30 @@ def create_app(config: dict = None) -> Flask:
         """Main dashboard page."""
         return render_template("dashboard.html")
 
-    @app.route("/config")
-    @login_required
-    def config():
-        """Configuration page."""
-        return render_template("config.html")
-
     @app.route("/api/status")
     @login_required
     def api_status():
         """Get broker status."""
-        status = docker_manager.get_status()
-        stats = docker_manager.get_stats()
-        return jsonify({"status": status, "stats": stats})
+        status = broker_manager.get_status()
+        conn_info = broker_manager.get_connection_info()
+        return jsonify({"status": status, "connection": conn_info})
 
-    @app.route("/api/config", methods=["GET"])
+    @app.route("/api/esp32")
     @login_required
-    def api_get_config():
-        """Get Mosquitto configuration."""
-        config = mosquitto_manager.read()
-        return jsonify(config)
+    def api_esp32():
+        """Get ESP32 config snippet."""
+        conn_info = broker_manager.get_connection_info()
+        if not conn_info:
+            return jsonify({"error": "No broker configured"}), 404
 
-    @app.route("/api/config", methods=["POST"])
-    @login_required
-    def api_set_config():
-        """Set Mosquitto configuration."""
-        data = request.get_json()
-        if mosquitto_manager.write(data):
-            return jsonify({"success": True, "message": "Configuration saved"})
-        return jsonify({"success": False, "message": "Failed to save configuration"}), 500
+        ip = conn_info['broker'].split(':')[0]
+        provisioning = ESP32Provisioning(ip, int(conn_info['port']))
+        snippet = provisioning.generate_arduino_snippet(
+            device_id="esp32_001",
+            username=conn_info['username'],
+            password=conn_info['password']
+        )
+        return jsonify({"snippet": snippet})
 
     @app.route("/api/users", methods=["GET"])
     @login_required
@@ -166,9 +160,9 @@ def create_app(config: dict = None) -> Flask:
     @socketio.on("request_status")
     def handle_status_request():
         """Handle status request."""
-        status = docker_manager.get_status()
-        stats = docker_manager.get_stats()
-        emit("status_update", {"status": status, "stats": stats})
+        status = broker_manager.get_status()
+        conn_info = broker_manager.get_connection_info()
+        emit("status_update", {"status": status, "connection": conn_info})
 
     return app, socketio
 

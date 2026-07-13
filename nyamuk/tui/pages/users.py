@@ -1,4 +1,4 @@
-"""Users page - MQTT user management."""
+"""Users Page - MQTT user management."""
 
 from textual.app import ComposeResult
 from textual.containers import Container, Horizontal, Vertical
@@ -47,6 +47,10 @@ class UsersPage(Vertical):
         height: 1fr;
         border: solid $accent;
     }
+    .no-broker {
+        color: $warning;
+        text-style: bold;
+    }
     """
 
     def __init__(self, **kwargs):
@@ -74,7 +78,6 @@ class UsersPage(Vertical):
             with Horizontal(classes="button-row"):
                 yield Button("Add User", id="add-btn", variant="success")
                 yield Button("Delete Selected", id="delete-btn", variant="error")
-                yield Button("Change Password", id="change-btn", variant="warning")
                 yield Button("Refresh", id="refresh-btn", variant="primary")
 
         yield DataTable(classes="users-table", id="users-table")

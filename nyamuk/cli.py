@@ -1,4 +1,4 @@
-"""CLI interface for Nyamuk MQTT Manager."""
+"""CLI interface for Nyamuk MQTT Manager - v2.0."""
 
 import click
 import json
@@ -8,11 +8,11 @@ from typing import Optional
 
 
 @click.group()
-@click.version_option(version="1.0.0", prog_name="nyamuk")
+@click.version_option(version="2.0.0", prog_name="nyamuk")
 def main():
-    """🦟 Nyamuk - Mosquitto MQTT Manager
+    """🦟 Nyamuk - MQTT Broker Factory
 
-    A lightweight MQTT broker manager with TUI & Web Dashboard.
+    Create your MQTT broker in 30 seconds - zero coding required.
     """
     pass
 
@@ -41,64 +41,161 @@ def web(host: str, port: int, debug: bool):
     socketio.run(app, host=host, port=port, debug=debug, allow_unsafe_werkzeug=True)
 
 
-@main.group()
-def config():
-    """Configuration management"""
-    pass
+@main.command()
+def create():
+    """Create a new MQTT broker"""
+    from nyamuk.core.broker_manager import BrokerManager
+    from nyamuk.core.port_scanner import PortScanner
 
+    manager = BrokerManager()
+    scanner = PortScanner()
 
-@config.command("show")
-def config_show():
-    """Show current configuration"""
-    from nyamuk.core.mosquitto import MosquittoManager
-    manager = MosquittoManager()
-    cfg = manager.read()
-    click.echo(json.dumps(cfg, indent=2))
+    # Check if broker already exists
+    if manager.get_broker_config():
+        click.echo("❌ Broker already exists. Delete it first with: nyamuk delete")
+        sys.exit(1)
 
+    # Get broker name
+    name = click.prompt("Broker name", default="my_broker")
 
-@config.command("set")
-@click.argument("key")
-@click.argument("value")
-def config_set(key: str, value: str):
-    """Set configuration value"""
-    from nyamuk.core.mosquitto import MosquittoManager
-    manager = MosquittoManager()
+    # Auto-detect port
+    suggested_port = scanner.suggest_port()
+    port = click.prompt("Port", default=suggested_port, type=int)
 
-    # Try to parse value as appropriate type
-    parsed_value = value
-    if value.lower() == "true":
-        parsed_value = True
-    elif value.lower() == "false":
-        parsed_value = False
+    # Check port
+    if not scanner.is_port_free(port):
+        click.echo(f"❌ Port {port} is already in use")
+        sys.exit(1)
+
+    # Get password
+    password = click.prompt("Password (leave empty for auto-generate)", default="", hide_input=True)
+
+    # Create broker
+    success, message = manager.create_broker(
+        name=name,
+        port=port,
+        password=password if password else None,
+    )
+
+    if success:
+        click.echo(f"✅ {message}")
+        click.echo("\nNext steps:")
+        click.echo(f"  1. Start broker: nyamuk start")
+        click.echo(f"  2. View connection info: nyamuk status")
     else:
-        try:
-            parsed_value = int(value)
-        except ValueError:
-            try:
-                parsed_value = float(value)
-            except ValueError:
-                pass
-
-    if manager.update(key, parsed_value):
-        click.echo(f"✅ Set {key} = {parsed_value}")
-    else:
-        click.echo(f"❌ Failed to set {key}", err=True)
+        click.echo(f"❌ {message}")
         sys.exit(1)
 
 
-@config.command("validate")
-def config_validate():
-    """Validate configuration"""
-    from nyamuk.core.mosquitto import MosquittoManager
-    manager = MosquittoManager()
-    is_valid, errors = manager.validate()
+@main.command()
+def start():
+    """Start the MQTT broker"""
+    from nyamuk.core.broker_manager import BrokerManager
+    manager = BrokerManager()
 
-    if is_valid:
-        click.echo("✅ Configuration is valid")
+    success, message = manager.start_broker()
+    if success:
+        click.echo(f"✅ {message}")
     else:
-        click.echo("⚠️  Configuration issues:")
-        for error in errors:
-            click.echo(f"  - {error}")
+        click.echo(f"❌ {message}")
+        sys.exit(1)
+
+
+@main.command()
+def stop():
+    """Stop the MQTT broker"""
+    from nyamuk.core.broker_manager import BrokerManager
+    manager = BrokerManager()
+
+    success, message = manager.stop_broker()
+    if success:
+        click.echo(f"✅ {message}")
+    else:
+        click.echo(f"❌ {message}")
+        sys.exit(1)
+
+
+@main.command()
+def restart():
+    """Restart the MQTT broker"""
+    from nyamuk.core.broker_manager import BrokerManager
+    manager = BrokerManager()
+
+    success, message = manager.restart_broker()
+    if success:
+        click.echo(f"✅ {message}")
+    else:
+        click.echo(f"❌ {message}")
+        sys.exit(1)
+
+
+@main.command()
+@click.confirmation_option(prompt="Are you sure you want to delete the broker?")
+def delete():
+    """Delete the MQTT broker"""
+    from nyamuk.core.broker_manager import BrokerManager
+    manager = BrokerManager()
+
+    success, message = manager.delete_broker()
+    if success:
+        click.echo(f"✅ {message}")
+    else:
+        click.echo(f"❌ {message}")
+        sys.exit(1)
+
+
+@main.command()
+def status():
+    """Show broker status and connection info"""
+    from nyamuk.core.broker_manager import BrokerManager
+    manager = BrokerManager()
+
+    config = manager.get_broker_config()
+    if not config:
+        click.echo("⚠️  No broker configured. Run: nyamuk create")
+        return
+
+    status = manager.get_status()
+    conn_info = manager.get_connection_info()
+
+    click.echo("🦟 Nyamuk MQTT Broker Status:")
+    click.echo(f"  Name: {status['name']}")
+    click.echo(f"  Status: {'🟢 Running' if status['status'] == 'running' else '🔴 Stopped'}")
+    click.echo(f"  Port: {status['port']}")
+    click.echo(f"  Created: {status['created_at'][:19]}")
+
+    click.echo("\n📡 Connection Info:")
+    click.echo(f"  Broker: {conn_info['broker']}")
+    click.echo(f"  Username: {conn_info['username']}")
+    click.echo(f"  Password: {conn_info['password']}")
+    click.echo(f"  Topic: {conn_info['topic_prefix']}/#")
+
+
+@main.command()
+def esp32():
+    """Generate ESP32 configuration snippet"""
+    from nyamuk.core.broker_manager import BrokerManager
+    from nyamuk.core.provisioning import ESP32Provisioning
+
+    manager = BrokerManager()
+    config = manager.get_broker_config()
+
+    if not config:
+        click.echo("⚠️  No broker configured. Run: nyamuk create")
+        return
+
+    conn_info = manager.get_connection_info()
+    ip = conn_info['broker'].split(':')[0]
+
+    provisioning = ESP32Provisioning(ip, int(conn_info['port']))
+    snippet = provisioning.generate_arduino_snippet(
+        device_id="esp32_001",
+        username=conn_info['username'],
+        password=conn_info['password']
+    )
+
+    click.echo("// Copy this to your Arduino sketch:")
+    click.echo(snippet)
 
 
 @main.group()
@@ -154,22 +251,6 @@ def user_delete(username: str):
         sys.exit(1)
 
 
-@user.command("password")
-@click.argument("username")
-@click.password_option()
-def user_password(username: str, password: str):
-    """Change user password"""
-    from nyamuk.core.user_manager import UserManager
-    manager = UserManager()
-
-    success, message = manager.change_password(username, password)
-    if success:
-        click.echo(f"✅ {message}")
-    else:
-        click.echo(f"❌ {message}", err=True)
-        sys.exit(1)
-
-
 @main.group()
 def acl():
     """ACL management"""
@@ -206,107 +287,6 @@ def acl_add(username: str, topic: str, access: str):
     else:
         click.echo(f"❌ {message}", err=True)
         sys.exit(1)
-
-
-@acl.command("delete")
-@click.argument("username")
-@click.argument("topic")
-def acl_delete(username: str, topic: str):
-    """Delete ACL rule"""
-    from nyamuk.core.acl_manager import ACLManager
-    manager = ACLManager()
-
-    success, message = manager.delete_rule(username, topic)
-    if success:
-        click.echo(f"✅ {message}")
-    else:
-        click.echo(f"❌ {message}", err=True)
-        sys.exit(1)
-
-
-@main.command()
-def status():
-    """Show broker status"""
-    from nyamuk.core.docker_manager import DockerManager
-    manager = DockerManager()
-
-    status = manager.get_status()
-    stats = manager.get_stats()
-
-    click.echo("🦟 Mosquitto Broker Status:")
-    click.echo(f"  Status: {status.get('status', 'unknown')}")
-    click.echo(f"  Image: {status.get('image', 'unknown')}")
-
-    if "error" not in stats:
-        click.echo(f"  CPU: {stats.get('cpu_percent', 0)}%")
-        click.echo(f"  Memory: {stats.get('memory_percent', 0)}%")
-
-
-@main.command()
-@click.option("--tail", default=100, help="Number of log lines to show")
-def logs(tail: int):
-    """View broker logs"""
-    from nyamuk.core.docker_manager import DockerManager
-    manager = DockerManager()
-
-    log_output = manager.get_logs(tail=tail)
-    click.echo(log_output)
-
-
-@main.command()
-def restart():
-    """Restart broker"""
-    from nyamuk.core.docker_manager import DockerManager
-    manager = DockerManager()
-
-    click.echo("Restarting Mosquitto broker...")
-    if manager.restart():
-        click.echo("✅ Broker restarted successfully")
-    else:
-        click.echo("❌ Failed to restart broker", err=True)
-        sys.exit(1)
-
-
-@main.command()
-@click.argument("output_file", default="nyamuk_export.json")
-def export(output_file: str):
-    """Export configuration"""
-    from nyamuk.core.mosquitto import MosquittoManager
-    from nyamuk.core.user_manager import UserManager
-    from nyamuk.core.acl_manager import ACLManager
-
-    mosquitto = MosquittoManager()
-    users = UserManager()
-    acl = ACLManager()
-
-    data = {
-        "config": mosquitto.read(),
-        "users": users.list_users(),
-        "acl": [r.to_dict() for r in acl.read_rules()],
-    }
-
-    with open(output_file, "w", encoding="utf-8") as f:
-        json.dump(data, f, indent=2)
-
-    click.echo(f"✅ Configuration exported to {output_file}")
-
-
-@main.command()
-@click.argument("input_file")
-def import_config(input_file: str):
-    """Import configuration"""
-    from nyamuk.core.mosquitto import MosquittoManager
-
-    with open(input_file, "r", encoding="utf-8") as f:
-        data = json.load(f)
-
-    mosquitto = MosquittoManager()
-    if "config" in data:
-        if mosquitto.write(data["config"]):
-            click.echo("✅ Configuration imported successfully")
-        else:
-            click.echo("❌ Failed to import configuration", err=True)
-            sys.exit(1)
 
 
 if __name__ == "__main__":

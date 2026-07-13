@@ -1,4 +1,4 @@
-"""Logs page - real-time log viewer."""
+"""Logs Page - Real-time log viewer."""
 
 from textual.app import ComposeResult
 from textual.containers import Container, Horizontal, Vertical
@@ -47,18 +47,6 @@ class LogsPage(Vertical):
     #log-output {
         height: 1fr;
         border: solid $accent;
-    }
-    .log-info {
-        color: $text;
-    }
-    .log-warning {
-        color: $warning;
-    }
-    .log-error {
-        color: $error;
-    }
-    .log-debug {
-        color: $text-muted;
     }
     """
 

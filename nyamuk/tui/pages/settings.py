@@ -1,8 +1,8 @@
-"""Settings page - application settings."""
+"""Settings Page - Application settings."""
 
 from textual.app import ComposeResult
 from textual.containers import Container, Horizontal, Vertical
-from textual.widgets import Static, Label, Input, Button, Switch, Select
+from textual.widgets import Static, Label, Input, Button, Select
 from textual.reactive import reactive
 
 from pathlib import Path
@@ -39,9 +39,6 @@ class SettingsPage(Vertical):
         width: 35%;
     }
     Input {
-        width: 65%;
-    }
-    Switch {
         width: 65%;
     }
     Select {
@@ -109,10 +106,6 @@ class SettingsPage(Vertical):
                     id="log-level-select",
                 )
 
-            with Horizontal(classes="settings-row"):
-                yield Label("Auto Refresh (sec):", classes="settings-label")
-                yield Input(value="5", id="refresh-input")
-
         with Horizontal(classes="button-row"):
             yield Button("Load Settings", id="load-btn", variant="primary")
             yield Button("Save Settings", id="save-btn", variant="success")
@@ -136,7 +129,6 @@ class SettingsPage(Vertical):
                 self.query_one("#admin-pass-input", Input).value = config.get("web_admin_pass", "nyamuk123")
                 self.query_one("#web-port-input", Input).value = str(config.get("web_port", 8080))
                 self.query_one("#log-level-select", Select).value = config.get("log_level", "INFO")
-                self.query_one("#refresh-input", Input).value = str(config.get("auto_refresh_interval", 5))
 
         except Exception as e:
             self.notify(f"Error loading settings: {e}", severity="error")
@@ -152,7 +144,6 @@ class SettingsPage(Vertical):
                 "web_admin_pass": self.query_one("#admin-pass-input", Input).value,
                 "web_port": int(self.query_one("#web-port-input", Input).value),
                 "log_level": self.query_one("#log-level-select", Select).value,
-                "auto_refresh_interval": int(self.query_one("#refresh-input", Input).value),
             }
 
             with open(self.config_path, "w", encoding="utf-8") as f:
@@ -175,7 +166,6 @@ class SettingsPage(Vertical):
             "web_admin_pass": "nyamuk123",
             "web_port": 8080,
             "log_level": "INFO",
-            "auto_refresh_interval": 5,
         }
 
         self.query_one("#broker-input", Input).value = defaults["mqtt_broker"]
@@ -185,7 +175,6 @@ class SettingsPage(Vertical):
         self.query_one("#admin-pass-input", Input).value = defaults["web_admin_pass"]
         self.query_one("#web-port-input", Input).value = str(defaults["web_port"])
         self.query_one("#log-level-select", Select).value = defaults["log_level"]
-        self.query_one("#refresh-input", Input).value = str(defaults["auto_refresh_interval"])
 
         self.notify("Settings reset to defaults", severity="info")
 

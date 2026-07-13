@@ -1,15 +1,15 @@
-"""TUI Dashboard for Nyamuk MQTT Manager."""
+"""Nyamuk TUI Application - v2.0 Single Broker Focus."""
 
 from textual.app import App, ComposeResult
 from textual.binding import Binding
 from textual.theme import Theme
 
-from nyamuk.tui.pages.dashboard import DashboardPage
-from nyamuk.tui.pages.config import ConfigPage
+from nyamuk.tui.pages.home import HomePage
+from nyamuk.tui.pages.create import CreatePage
 from nyamuk.tui.pages.users import UsersPage
 from nyamuk.tui.pages.acl import ACLPage
+from nyamuk.tui.pages.config import ConfigPage
 from nyamuk.tui.pages.logs import LogsPage
-from nyamuk.tui.pages.settings import SettingsPage
 
 
 NYAMUK_THEME = Theme(
@@ -29,10 +29,10 @@ NYAMUK_THEME = Theme(
 
 
 class NyamukTUI(App):
-    """Nyamuk TUI Application."""
+    """Nyamuk TUI Application - v2.0."""
 
-    TITLE = "🦟 Nyamuk - MQTT Manager"
-    SUB_TITLE = "Mosquitto Configuration & Monitoring"
+    TITLE = "🦟 Nyamuk - MQTT Broker Factory"
+    SUB_TITLE = "Create your MQTT broker in 30 seconds"
 
     CSS = """
     Screen {
@@ -42,24 +42,24 @@ class NyamukTUI(App):
 
     BINDINGS = [
         Binding("q", "quit", "Quit"),
-        Binding("d", "switch_page('dashboard')", "Dashboard"),
-        Binding("c", "switch_page('config')", "Config"),
+        Binding("h", "switch_page('home')", "Home"),
+        Binding("c", "switch_page('create')", "Create"),
         Binding("u", "switch_page('users')", "Users"),
         Binding("a", "switch_page('acl')", "ACL"),
+        Binding("s", "switch_page('config')", "Config"),
         Binding("l", "switch_page('logs')", "Logs"),
-        Binding("s", "switch_page('settings')", "Settings"),
     ]
 
     def compose(self) -> ComposeResult:
-        yield DashboardPage(id="dashboard")
-        yield ConfigPage(id="config")
+        yield HomePage(id="home")
+        yield CreatePage(id="create")
         yield UsersPage(id="users")
         yield ACLPage(id="acl")
+        yield ConfigPage(id="config")
         yield LogsPage(id="logs")
-        yield SettingsPage(id="settings")
 
     def on_mount(self) -> None:
-        self.switch_page("dashboard")
+        self.switch_page("home")
 
     def action_switch_page(self, page_name: str) -> None:
         self.switch_page(page_name)
