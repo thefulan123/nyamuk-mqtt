@@ -24,7 +24,7 @@ NYAMUK_THEME = Theme(
     warning="#ffa500",
     error="#ff6347",
     text="#ffffff",
-    text-muted="#888888",
+    text_muted="#888888",
 )
 
 
