@@ -41,11 +41,13 @@ def create_app(config: dict = None) -> Flask:
 
     def login_required(f):
         """Login required decorator."""
+
         @wraps(f)
         def decorated_function(*args, **kwargs):
             if not session.get("logged_in"):
                 return redirect(url_for("login"))
             return f(*args, **kwargs)
+
         return decorated_function
 
     @app.route("/login", methods=["GET", "POST"])
@@ -121,12 +123,10 @@ def create_app(config: dict = None) -> Flask:
         if not conn_info:
             return jsonify({"error": "No broker configured"}), 404
 
-        ip = conn_info['broker'].split(':')[0]
-        provisioning = ESP32Provisioning(ip, int(conn_info['port']))
+        ip = conn_info["broker"].split(":")[0]
+        provisioning = ESP32Provisioning(ip, int(conn_info["port"]))
         snippet = provisioning.generate_arduino_snippet(
-            device_id="esp32_001",
-            username=conn_info['username'],
-            password=conn_info['password']
+            device_id="esp32_001", username=conn_info["username"], password=conn_info["password"]
         )
         return jsonify({"snippet": snippet})
 

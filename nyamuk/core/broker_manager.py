@@ -15,6 +15,7 @@ from nyamuk.core.port_scanner import PortScanner
 @dataclass
 class BrokerConfig:
     """Broker configuration data."""
+
     name: str
     port: int
     password: str
@@ -67,8 +68,9 @@ class BrokerManager:
             print(f"Error saving config: {e}")
             return False
 
-    def create_broker(self, name: str, port: Optional[int] = None,
-                      password: str = "", **kwargs) -> Tuple[bool, str]:
+    def create_broker(
+        self, name: str, port: Optional[int] = None, password: str = "", **kwargs
+    ) -> Tuple[bool, str]:
         """Create a new broker instance."""
         # Check if broker already exists
         if self.get_broker_config():
@@ -95,11 +97,7 @@ class BrokerManager:
 
         # Create config
         config = BrokerConfig(
-            name=name,
-            port=port,
-            password=password,
-            created_at=datetime.now().isoformat(),
-            **kwargs
+            name=name, port=port, password=password, created_at=datetime.now().isoformat(), **kwargs
         )
 
         # Generate mosquitto.conf (always listen on 1883 inside container)
@@ -140,14 +138,22 @@ class BrokerManager:
             # Run Docker container
             broker_dir = self.brokers_dir / config.name
             cmd = [
-                "docker", "run", "-d",
-                "--name", f"nyamuk_{config.name}",
-                "-p", f"{config.port}:1883",
-                "-v", f"{broker_dir}/mosquitto.conf:/mosquitto/config/mosquitto.conf:ro",
-                "-v", f"{broker_dir}/passwd:/mosquitto/config/passwd:ro",
-                "-v", f"{broker_dir}/data:/mosquitto/data",
-                "--restart", "unless-stopped",
-                "eclipse-mosquitto:2"
+                "docker",
+                "run",
+                "-d",
+                "--name",
+                f"nyamuk_{config.name}",
+                "-p",
+                f"{config.port}:1883",
+                "-v",
+                f"{broker_dir}/mosquitto.conf:/mosquitto/config/mosquitto.conf:ro",
+                "-v",
+                f"{broker_dir}/passwd:/mosquitto/config/passwd:ro",
+                "-v",
+                f"{broker_dir}/data:/mosquitto/data",
+                "--restart",
+                "unless-stopped",
+                "eclipse-mosquitto:2",
             ]
 
             result = subprocess.run(cmd, capture_output=True, text=True, timeout=30)
@@ -282,6 +288,7 @@ class BrokerManager:
         """Get host IP address."""
         try:
             import socket
+
             s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
             s.connect(("8.8.8.8", 80))
             ip = s.getsockname()[0]
@@ -294,18 +301,27 @@ class BrokerManager:
         """Generate random password."""
         import secrets
         import string
+
         chars = string.ascii_letters + string.digits
-        return ''.join(secrets.choice(chars) for _ in range(length))
+        return "".join(secrets.choice(chars) for _ in range(length))
 
     def _create_password_file(self, filepath: Path, username: str, password: str):
         """Create Mosquitto password file."""
         try:
             # Use docker to create password file
             cmd = [
-                "docker", "run", "--rm",
-                "-v", f"{filepath.parent}:/tmp/passwd",
+                "docker",
+                "run",
+                "--rm",
+                "-v",
+                f"{filepath.parent}:/tmp/passwd",
                 "eclipse-mosquitto:2",
-                "mosquitto_passwd", "-c", "-b", f"/tmp/passwd/{filepath.name}", username, password
+                "mosquitto_passwd",
+                "-c",
+                "-b",
+                f"/tmp/passwd/{filepath.name}",
+                username,
+                password,
             ]
             subprocess.run(cmd, capture_output=True, text=True, timeout=30)
 

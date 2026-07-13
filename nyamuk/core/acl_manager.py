@@ -9,6 +9,7 @@ from typing import List, Optional, Tuple
 @dataclass
 class ACLRule:
     """Represents a single ACL rule."""
+
     username: str
     topic: str
     access: str = "readwrite"  # read, write, readwrite
@@ -47,13 +48,16 @@ class ACLManager:
 
     VALID_ACCESS = ["read", "write", "readwrite"]
 
-    def __init__(self, container_name: str = "mosquitto", acl_file: str = "/mosquitto/config/aclfile"):
+    def __init__(
+        self, container_name: str = "mosquitto", acl_file: str = "/mosquitto/config/aclfile"
+    ):
         self.container_name = container_name
         self.acl_file = acl_file
 
     def _run_command(self, command: str) -> Tuple[int, str]:
         """Execute command in Mosquitto container."""
         import subprocess
+
         try:
             result = subprocess.run(
                 ["docker", "exec", self.container_name] + command.split(),
@@ -113,6 +117,7 @@ class ACLManager:
 
             # Write to temp file then copy to container
             import tempfile
+
             with tempfile.NamedTemporaryFile(mode="w", suffix=".acl", delete=False) as f:
                 f.write(content)
                 temp_path = f.name

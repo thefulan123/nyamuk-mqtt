@@ -15,8 +15,13 @@ except ImportError:
 class MQTTMonitor:
     """Monitor MQTT broker in real-time."""
 
-    def __init__(self, broker: str = "localhost", port: int = 1883,
-                 username: Optional[str] = None, password: Optional[str] = None):
+    def __init__(
+        self,
+        broker: str = "localhost",
+        port: int = 1883,
+        username: Optional[str] = None,
+        password: Optional[str] = None,
+    ):
         if mqtt is None:
             raise ImportError("paho-mqtt is required. Install with: pip install paho-mqtt")
 
@@ -73,7 +78,7 @@ class MQTTMonitor:
 
             self._messages.append(message)
             if len(self._messages) > self._max_messages:
-                self._messages = self._messages[-self._max_messages:]
+                self._messages = self._messages[-self._max_messages :]
 
             self._topic_stats[msg.topic] += 1
 
@@ -126,7 +131,8 @@ class MQTTMonitor:
         with self._lock:
             now = datetime.now()
             recent = [
-                m for m in self._messages
+                m
+                for m in self._messages
                 if (now - datetime.fromisoformat(m["timestamp"])).seconds <= window
             ]
             return len(recent) / window if window > 0 else 0

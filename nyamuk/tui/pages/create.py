@@ -72,7 +72,7 @@ class CreatePage(Vertical):
         if existing:
             yield Label(
                 "Broker already exists. Delete it first before creating a new one.",
-                classes="error-message"
+                classes="error-message",
             )
             return
 

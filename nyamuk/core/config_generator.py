@@ -92,8 +92,14 @@ class ConfigGenerator:
             password_file=password_file,
         )
 
-    def generate_secure(self, port: int = 8883, password_file: str = None,
-                        cafile: str = None, certfile: str = None, keyfile: str = None) -> str:
+    def generate_secure(
+        self,
+        port: int = 8883,
+        password_file: str = None,
+        cafile: str = None,
+        certfile: str = None,
+        keyfile: str = None,
+    ) -> str:
         """Generate secure Mosquitto configuration with TLS."""
         return self.generate(
             port=port,

@@ -11,7 +11,9 @@ class UserManager:
     # Username validation: alphanumeric, underscore, 3-20 chars
     USERNAME_PATTERN = re.compile(r"^[a-zA-Z0-9_]{3,20}$")
 
-    def __init__(self, container_name: str = "mosquitto", password_file: str = "/mosquitto/config/passwd"):
+    def __init__(
+        self, container_name: str = "mosquitto", password_file: str = "/mosquitto/config/passwd"
+    ):
         self.container_name = container_name
         self.password_file = password_file
 

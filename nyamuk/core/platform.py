@@ -47,6 +47,7 @@ class Platform:
         if cls.SYSTEM == "Windows":
             try:
                 import ctypes
+
                 return ctypes.windll.shell32.IsUserAnAdmin() != 0
             except Exception:
                 return False

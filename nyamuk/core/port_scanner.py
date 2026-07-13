@@ -12,9 +12,7 @@ class PortScanner:
     MQTT_PORT_END = 1900
 
     # Well-known ports to avoid
-    RESERVED_PORTS = {
-        22, 80, 443, 3306, 5432, 6379, 8080, 8443, 8888, 9090, 27017
-    }
+    RESERVED_PORTS = {22, 80, 443, 3306, 5432, 6379, 8080, 8443, 8888, 9090, 27017}
 
     def __init__(self, port_range: tuple = (MQTT_PORT_START, MQTT_PORT_END)):
         self.port_range = port_range
@@ -24,7 +22,7 @@ class PortScanner:
         try:
             with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
                 s.settimeout(1)
-                result = s.connect_ex(('localhost', port))
+                result = s.connect_ex(("localhost", port))
                 return result != 0  # Connection refused = port is free
         except Exception:
             return False

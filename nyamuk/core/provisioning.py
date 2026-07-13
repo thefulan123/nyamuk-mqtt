@@ -10,8 +10,9 @@ class ESP32Provisioning:
         self.broker_ip = broker_ip
         self.broker_port = broker_port
 
-    def generate_config(self, device_id: str, username: str, password: str,
-                        topic_prefix: str = "nyamuk") -> Dict[str, str]:
+    def generate_config(
+        self, device_id: str, username: str, password: str, topic_prefix: str = "nyamuk"
+    ) -> Dict[str, str]:
         """Generate ESP32 configuration."""
         return {
             "MQTT_SERVER": f'"{self.broker_ip}"',
@@ -25,8 +26,9 @@ class ESP32Provisioning:
             "TOPIC_STATUS": f'"{topic_prefix}/{device_id}/status"',
         }
 
-    def generate_arduino_snippet(self, device_id: str, username: str,
-                                  password: str, topic_prefix: str = "nyamuk") -> str:
+    def generate_arduino_snippet(
+        self, device_id: str, username: str, password: str, topic_prefix: str = "nyamuk"
+    ) -> str:
         """Generate Arduino code snippet."""
         config = self.generate_config(device_id, username, password, topic_prefix)
 
@@ -38,24 +40,29 @@ const char* WIFI_SSID = "YOUR_WIFI_SSID";
 const char* WIFI_PASSWORD = "YOUR_WIFI_PASSWORD";
 
 // MQTT Settings
-const char* MQTT_SERVER = {config['MQTT_SERVER']};
-const int MQTT_PORT = {config['MQTT_PORT']};
-const char* MQTT_USER = {config['MQTT_USER']};
-const char* MQTT_PASSWORD = {config['MQTT_PASSWORD']};
+const char* MQTT_SERVER = {config["MQTT_SERVER"]};
+const int MQTT_PORT = {config["MQTT_PORT"]};
+const char* MQTT_USER = {config["MQTT_USER"]};
+const char* MQTT_PASSWORD = {config["MQTT_PASSWORD"]};
 
 // Device ID
-const char* DEVICE_ID = {config['DEVICE_ID']};
+const char* DEVICE_ID = {config["DEVICE_ID"]};
 
 // Topics
-const char* TOPIC_SENSOR = {config['TOPIC_SENSOR']};
-const char* TOPIC_COMMAND = {config['TOPIC_COMMAND']};
-const char* TOPIC_STATUS = {config['TOPIC_STATUS']};
+const char* TOPIC_SENSOR = {config["TOPIC_SENSOR"]};
+const char* TOPIC_COMMAND = {config["TOPIC_COMMAND"]};
+const char* TOPIC_STATUS = {config["TOPIC_STATUS"]};
 """
         return snippet
 
-    def generate_full_arduino(self, device_id: str, username: str,
-                               password: str, topic_prefix: str = "nyamuk",
-                               sensor_type: str = "basic") -> str:
+    def generate_full_arduino(
+        self,
+        device_id: str,
+        username: str,
+        password: str,
+        topic_prefix: str = "nyamuk",
+        sensor_type: str = "basic",
+    ) -> str:
         """Generate complete Arduino sketch."""
         config = self.generate_config(device_id, username, password, topic_prefix)
 
@@ -81,16 +88,16 @@ const char* WIFI_SSID = "YOUR_WIFI_SSID";
 const char* WIFI_PASSWORD = "YOUR_WIFI_PASSWORD";
 
 // MQTT
-const char* MQTT_SERVER = {config['MQTT_SERVER']};
-const int MQTT_PORT = {config['MQTT_PORT']};
-const char* MQTT_USER = {config['MQTT_USER']};
-const char* MQTT_PASSWORD = {config['MQTT_PASSWORD']};
-const char* DEVICE_ID = {config['DEVICE_ID']};
+const char* MQTT_SERVER = {config["MQTT_SERVER"]};
+const int MQTT_PORT = {config["MQTT_PORT"]};
+const char* MQTT_USER = {config["MQTT_USER"]};
+const char* MQTT_PASSWORD = {config["MQTT_PASSWORD"]};
+const char* DEVICE_ID = {config["DEVICE_ID"]};
 
 // Topics
-const char* TOPIC_SENSOR = {config['TOPIC_SENSOR']};
-const char* TOPIC_COMMAND = {config['TOPIC_COMMAND']};
-const char* TOPIC_STATUS = {config['TOPIC_STATUS']};
+const char* TOPIC_SENSOR = {config["TOPIC_SENSOR"]};
+const char* TOPIC_COMMAND = {config["TOPIC_COMMAND"]};
+const char* TOPIC_STATUS = {config["TOPIC_STATUS"]};
 
 WiFiClient espClient;
 PubSubClient client(espClient);
@@ -157,16 +164,16 @@ const char* WIFI_SSID = "YOUR_WIFI_SSID";
 const char* WIFI_PASSWORD = "YOUR_WIFI_PASSWORD";
 
 // MQTT
-const char* MQTT_SERVER = {config['MQTT_SERVER']};
-const int MQTT_PORT = {config['MQTT_PORT']};
-const char* MQTT_USER = {config['MQTT_USER']};
-const char* MQTT_PASSWORD = {config['MQTT_PASSWORD']};
-const char* DEVICE_ID = {config['DEVICE_ID']};
+const char* MQTT_SERVER = {config["MQTT_SERVER"]};
+const int MQTT_PORT = {config["MQTT_PORT"]};
+const char* MQTT_USER = {config["MQTT_USER"]};
+const char* MQTT_PASSWORD = {config["MQTT_PASSWORD"]};
+const char* DEVICE_ID = {config["DEVICE_ID"]};
 
 // Topics
-const char* TOPIC_SENSOR = {config['TOPIC_SENSOR']};
-const char* TOPIC_COMMAND = {config['TOPIC_COMMAND']};
-const char* TOPIC_STATUS = {config['TOPIC_STATUS']};
+const char* TOPIC_SENSOR = {config["TOPIC_SENSOR"]};
+const char* TOPIC_COMMAND = {config["TOPIC_COMMAND"]};
+const char* TOPIC_STATUS = {config["TOPIC_STATUS"]};
 
 // DHT22
 #define DHTPIN 4
@@ -242,16 +249,16 @@ const char* WIFI_SSID = "YOUR_WIFI_SSID";
 const char* WIFI_PASSWORD = "YOUR_WIFI_PASSWORD";
 
 // MQTT
-const char* MQTT_SERVER = {config['MQTT_SERVER']};
-const int MQTT_PORT = {config['MQTT_PORT']};
-const char* MQTT_USER = {config['MQTT_USER']};
-const char* MQTT_PASSWORD = {config['MQTT_PASSWORD']};
-const char* DEVICE_ID = {config['DEVICE_ID']};
+const char* MQTT_SERVER = {config["MQTT_SERVER"]};
+const int MQTT_PORT = {config["MQTT_PORT"]};
+const char* MQTT_USER = {config["MQTT_USER"]};
+const char* MQTT_PASSWORD = {config["MQTT_PASSWORD"]};
+const char* DEVICE_ID = {config["DEVICE_ID"]};
 
 // Topics
-const char* TOPIC_SENSOR = {config['TOPIC_SENSOR']};
-const char* TOPIC_COMMAND = {config['TOPIC_COMMAND']};
-const char* TOPIC_STATUS = {config['TOPIC_STATUS']};
+const char* TOPIC_SENSOR = {config["TOPIC_SENSOR"]};
+const char* TOPIC_COMMAND = {config["TOPIC_COMMAND"]};
+const char* TOPIC_STATUS = {config["TOPIC_STATUS"]};
 
 // BMP280
 Adafruit_BMP280 bmp;

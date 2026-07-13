@@ -11,8 +11,12 @@ class MosquittoConfig(BaseModel):
     listener: int = Field(default=1883, ge=1, le=65535, description="MQTT listener port")
     allow_anonymous: bool = Field(default=True, description="Allow anonymous connections")
     persistence: bool = Field(default=True, description="Enable message persistence")
-    persistence_location: str = Field(default="/mosquitto/data/", description="Persistence directory")
-    log_dest: str = Field(default="file /mosquitto/log/mosquitto.log", description="Log destination")
+    persistence_location: str = Field(
+        default="/mosquitto/data/", description="Persistence directory"
+    )
+    log_dest: str = Field(
+        default="file /mosquitto/log/mosquitto.log", description="Log destination"
+    )
     log_type: str = Field(default="all", description="Log types to capture")
     max_connections: int = Field(default=-1, ge=-1, description="Max connections (-1 = unlimited)")
     max_inflight_messages: int = Field(default=20, ge=0, description="Max inflight messages")
@@ -40,6 +44,7 @@ class MosquittoConfig(BaseModel):
     def validate_auth(cls, v):
         if v:
             import warnings
+
             warnings.warn(
                 "Warning: Anonymous access enabled. Consider disabling for production.",
                 stacklevel=2,
@@ -80,7 +85,9 @@ class NyamukConfig(BaseModel):
     docker_image: str = Field(default="eclipse-mosquitto:2", description="Docker image name")
 
     log_level: str = Field(default="INFO", description="Application log level")
-    auto_refresh_interval: int = Field(default=5, ge=1, description="Auto-refresh interval in seconds")
+    auto_refresh_interval: int = Field(
+        default=5, ge=1, description="Auto-refresh interval in seconds"
+    )
 
     @validator("web_port", "mqtt_port")
     @classmethod

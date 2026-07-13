@@ -92,7 +92,9 @@ class HomePage(Vertical):
         # ESP32 Config
         with Container(classes="esp32-section"):
             yield Label("ESP32 Configuration", classes="section-title")
-            yield Label("// Copy this to your Arduino sketch", id="esp32-config", classes="esp32-code")
+            yield Label(
+                "// Copy this to your Arduino sketch", id="esp32-config", classes="esp32-code"
+            )
 
         # Action Buttons
         with Horizontal(classes="button-row"):
@@ -117,7 +119,9 @@ class HomePage(Vertical):
             self.query_one("#broker-addr", Label).update("Broker: --:--")
             self.query_one("#broker-user", Label).update("Username: --")
             self.query_one("#broker-pass", Label).update("Password: --")
-            self.query_one("#esp32-config", Label).update("// No broker configured. Go to Create page.")
+            self.query_one("#esp32-config", Label).update(
+                "// No broker configured. Go to Create page."
+            )
             return
 
         # Get status
@@ -139,12 +143,13 @@ class HomePage(Vertical):
 
             # Generate ESP32 config
             from nyamuk.core.provisioning import ESP32Provisioning
-            ip = conn_info['broker'].split(':')[0]
-            provisioning = ESP32Provisioning(ip, int(conn_info['port']))
+
+            ip = conn_info["broker"].split(":")[0]
+            provisioning = ESP32Provisioning(ip, int(conn_info["port"]))
             esp32_config = provisioning.generate_arduino_snippet(
                 device_id="esp32_001",
-                username=conn_info['username'],
-                password=conn_info['password']
+                username=conn_info["username"],
+                password=conn_info["password"],
             )
             self.query_one("#esp32-config", Label).update(esp32_config)
 

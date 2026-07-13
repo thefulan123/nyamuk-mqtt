@@ -20,7 +20,9 @@ class DockerManager:
             try:
                 self._client = docker.from_env()
             except DockerException as err:
-                raise ConnectionError("Cannot connect to Docker daemon. Is Docker running?") from err
+                raise ConnectionError(
+                    "Cannot connect to Docker daemon. Is Docker running?"
+                ) from err
         return self._client
 
     def get_container(self):
@@ -116,10 +118,13 @@ class DockerManager:
             stats = container.stats(stream=False)
 
             # Parse CPU stats
-            cpu_delta = stats["cpu_stats"]["cpu_usage"]["total_usage"] - \
-                       stats["precpu_stats"]["cpu_usage"]["total_usage"]
-            system_delta = stats["cpu_stats"]["system_cpu_usage"] - \
-                          stats["precpu_stats"]["system_cpu_usage"]
+            cpu_delta = (
+                stats["cpu_stats"]["cpu_usage"]["total_usage"]
+                - stats["precpu_stats"]["cpu_usage"]["total_usage"]
+            )
+            system_delta = (
+                stats["cpu_stats"]["system_cpu_usage"] - stats["precpu_stats"]["system_cpu_usage"]
+            )
             cpu_percent = (cpu_delta / system_delta * 100.0) if system_delta > 0 else 0.0
 
             # Parse memory stats

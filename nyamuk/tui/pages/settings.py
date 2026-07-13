@@ -121,11 +121,17 @@ class SettingsPage(Vertical):
                 with open(self.config_path, encoding="utf-8") as f:
                     config = json.load(f)
 
-                self.query_one("#broker-input", Input).value = config.get("mqtt_broker", "localhost")
+                self.query_one("#broker-input", Input).value = config.get(
+                    "mqtt_broker", "localhost"
+                )
                 self.query_one("#port-input", Input).value = str(config.get("mqtt_port", 1883))
                 self.query_one("#prefix-input", Input).value = config.get("topic_prefix", "nyamuk")
-                self.query_one("#admin-user-input", Input).value = config.get("web_admin_user", "admin")
-                self.query_one("#admin-pass-input", Input).value = config.get("web_admin_pass", "nyamuk123")
+                self.query_one("#admin-user-input", Input).value = config.get(
+                    "web_admin_user", "admin"
+                )
+                self.query_one("#admin-pass-input", Input).value = config.get(
+                    "web_admin_pass", "nyamuk123"
+                )
                 self.query_one("#web-port-input", Input).value = str(config.get("web_port", 8080))
                 self.query_one("#log-level-select", Select).value = config.get("log_level", "INFO")
 

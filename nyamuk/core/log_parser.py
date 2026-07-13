@@ -8,6 +8,7 @@ from typing import Dict, List, Optional, Tuple
 
 class LogLevel(Enum):
     """Mosquitto log levels."""
+
     INFO = "info"
     WARNING = "warning"
     ERROR = "error"
@@ -19,6 +20,7 @@ class LogLevel(Enum):
 @dataclass
 class LogEntry:
     """Represents a single log entry."""
+
     timestamp: str
     level: LogLevel
     message: str
@@ -38,21 +40,22 @@ class LogParser:
     """Parse and filter Mosquitto log files."""
 
     # Mosquitto log pattern: 2024-01-15T10:30:00: message
-    LOG_PATTERN = re.compile(
-        r"^(\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2})\s+(.+)$"
-    )
+    LOG_PATTERN = re.compile(r"^(\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2})\s+(.+)$")
 
     # Client-related patterns
     CLIENT_PATTERN = re.compile(r"Client\s+(\S+)")
     NEW_CLIENT_PATTERN = re.compile(r"New client connected.*?Client\s+(\S+)")
 
-    def __init__(self, container_name: str = "mosquitto", log_file: str = "/mosquitto/log/mosquitto.log"):
+    def __init__(
+        self, container_name: str = "mosquitto", log_file: str = "/mosquitto/log/mosquitto.log"
+    ):
         self.container_name = container_name
         self.log_file = log_file
 
     def _run_command(self, command: str) -> Tuple[int, str]:
         """Execute command in Mosquitto container."""
         import subprocess
+
         try:
             result = subprocess.run(
                 ["docker", "exec", self.container_name] + command.split(),

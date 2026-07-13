@@ -19,6 +19,7 @@ def main():
 def tui():
     """Launch TUI Dashboard"""
     from nyamuk.tui import NyamukTUI
+
     app = NyamukTUI()
     app.run()
 
@@ -30,9 +31,11 @@ def tui():
 def web(host: str, port: int, debug: bool):
     """Launch Web Dashboard"""
     from nyamuk.web import create_app
+
     app, socketio = create_app()
 
     import os
+
     os.environ["NYAMUK_DEBUG"] = "true" if debug else "false"
 
     click.echo(f"Nyamuk Web Dashboard starting on http://{host}:{port}")
@@ -89,6 +92,7 @@ def create():
 def start():
     """Start the MQTT broker"""
     from nyamuk.core.broker_manager import BrokerManager
+
     manager = BrokerManager()
 
     success, message = manager.start_broker()
@@ -103,6 +107,7 @@ def start():
 def stop():
     """Stop the MQTT broker"""
     from nyamuk.core.broker_manager import BrokerManager
+
     manager = BrokerManager()
 
     success, message = manager.stop_broker()
@@ -117,6 +122,7 @@ def stop():
 def restart():
     """Restart the MQTT broker"""
     from nyamuk.core.broker_manager import BrokerManager
+
     manager = BrokerManager()
 
     success, message = manager.restart_broker()
@@ -132,6 +138,7 @@ def restart():
 def delete():
     """Delete the MQTT broker"""
     from nyamuk.core.broker_manager import BrokerManager
+
     manager = BrokerManager()
 
     success, message = manager.delete_broker()
@@ -146,6 +153,7 @@ def delete():
 def status():
     """Show broker status and connection info"""
     from nyamuk.core.broker_manager import BrokerManager
+
     manager = BrokerManager()
 
     config = manager.get_broker_config()
@@ -183,13 +191,11 @@ def esp32():
         return
 
     conn_info = manager.get_connection_info()
-    ip = conn_info['broker'].split(':')[0]
+    ip = conn_info["broker"].split(":")[0]
 
-    provisioning = ESP32Provisioning(ip, int(conn_info['port']))
+    provisioning = ESP32Provisioning(ip, int(conn_info["port"]))
     snippet = provisioning.generate_arduino_snippet(
-        device_id="esp32_001",
-        username=conn_info['username'],
-        password=conn_info['password']
+        device_id="esp32_001", username=conn_info["username"], password=conn_info["password"]
     )
 
     click.echo("// Copy this to your Arduino sketch:")
@@ -206,6 +212,7 @@ def user():
 def user_list():
     """List all MQTT users"""
     from nyamuk.core.user_manager import UserManager
+
     manager = UserManager()
     users = manager.list_users()
 
@@ -223,6 +230,7 @@ def user_list():
 def user_add(username: str, password: str):
     """Add a new MQTT user"""
     from nyamuk.core.user_manager import UserManager
+
     manager = UserManager()
 
     success, message = manager.add_user(username, password)
@@ -239,6 +247,7 @@ def user_add(username: str, password: str):
 def user_delete(username: str):
     """Delete an MQTT user"""
     from nyamuk.core.user_manager import UserManager
+
     manager = UserManager()
 
     success, message = manager.delete_user(username)
@@ -259,6 +268,7 @@ def acl():
 def acl_list():
     """List ACL rules"""
     from nyamuk.core.acl_manager import ACLManager
+
     manager = ACLManager()
     rules = manager.read_rules()
 
@@ -277,6 +287,7 @@ def acl_list():
 def acl_add(username: str, topic: str, access: str):
     """Add ACL rule"""
     from nyamuk.core.acl_manager import ACLManager
+
     manager = ACLManager()
 
     success, message = manager.add_rule(username, topic, access)
