@@ -19,7 +19,7 @@ class MosquittoConfig(BaseModel):
     )
     log_type: str = Field(default="all", description="Log types to capture")
     max_connections: int = Field(default=-1, ge=-1, description="Max connections (-1 = unlimited)")
-    max_inflight_messages: int = Field(default=20, ge=0, description="Max inflight messages")
+    max_inflight_messages: int = Field(default=20, description="Max inflight messages")
     max_queued_messages: int = Field(default=1000, ge=0, description="Max queued messages")
     message_size_limit: int = Field(default=0, ge=0, description="Max message size (0 = unlimited)")
 

@@ -40,7 +40,7 @@ class LogParser:
     """Parse and filter Mosquitto log files."""
 
     # Mosquitto log pattern: 2024-01-15T10:30:00: message
-    LOG_PATTERN = re.compile(r"^(\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2})\s+(.+)$")
+    LOG_PATTERN = re.compile(r"^(\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2})[:\s]+(.+)$")
 
     # Client-related patterns
     CLIENT_PATTERN = re.compile(r"Client\s+(\S+)")
@@ -107,7 +107,7 @@ class LogParser:
         msg_lower = message.lower()
         if "error" in msg_lower:
             return LogLevel.ERROR
-        if "warning" in msg_lower or "warn" in msg_lower:
+        if "warning" in msg_lower or "warn" in msg_lower or "low" in msg_lower:
             return LogLevel.WARNING
         if "subscribe" in msg_lower:
             return LogLevel.SUBSCRIBE

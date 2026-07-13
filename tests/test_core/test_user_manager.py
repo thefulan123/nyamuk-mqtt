@@ -77,7 +77,7 @@ class TestUserManager:
         
         # Mock the _run_command method
         original_run = manager._run_command
-        manager._run_command = lambda cmd: (0, "user1\nuser2\n")
+        manager._run_command = lambda cmd: (0, "user1:$6$salt$hash\nuser2:$6$salt$hash\n")
         
         assert manager.user_exists("user1") is True
         assert manager.user_exists("user3") is False

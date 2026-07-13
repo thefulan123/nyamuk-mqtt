@@ -74,8 +74,11 @@ class TestMosquittoManager:
     def test_validate_invalid_port(self):
         """Test validating invalid port."""
         manager = MosquittoManager()
-        manager._config = {"listener": 99999}
+        original_read = manager.read
+        manager.read = lambda: {"listener": 99999}
         
         is_valid, errors = manager.validate()
         assert is_valid is False
         assert any("port" in e.lower() for e in errors)
+        
+        manager.read = original_read
