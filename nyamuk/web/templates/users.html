@@ -1,0 +1,85 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="dashboard">
+    <h2>👥 MQTT Users</h2>
+
+    <div class="section">
+        <h3>Add User</h3>
+        <form id="add-user-form" class="form-inline">
+            <input type="text" id="new-username" placeholder="Username" required>
+            <input type="password" id="new-password" placeholder="Password" required>
+            <button type="submit" class="btn btn-primary">Add User</button>
+        </form>
+    </div>
+
+    <div class="section">
+        <h3>User List</h3>
+        <div id="user-list" class="list-container">Loading...</div>
+    </div>
+
+    <div class="section">
+        <h3>ESP32 Config Snippet</h3>
+        <pre id="esp32-config" class="code-block">// Loading...</pre>
+        <button id="copy-config" class="btn btn-primary">Copy to Clipboard</button>
+    </div>
+</div>
+
+<script>
+async function loadUsers() {
+    const response = await fetch('/api/users');
+    const data = await response.json();
+    const list = document.getElementById('user-list');
+    if (data.users && data.users.length > 0) {
+        list.innerHTML = data.users.map(u => `
+            <div class="list-item">
+                <span>${u}</span>
+                <button onclick="deleteUser('${u}')" class="btn btn-danger btn-sm">Delete</button>
+            </div>
+        `).join('');
+    } else {
+        list.innerHTML = '<p>No users found</p>';
+    }
+}
+
+async function deleteUser(username) {
+    if (!confirm(`Delete user '${username}'?`)) return;
+    const response = await fetch(`/api/users/${username}`, { method: 'DELETE' });
+    const data = await response.json();
+    alert(data.message);
+    loadUsers();
+}
+
+document.getElementById('add-user-form').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const username = document.getElementById('new-username').value;
+    const password = document.getElementById('new-password').value;
+    const response = await fetch('/api/users', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ username, password })
+    });
+    const data = await response.json();
+    alert(data.message);
+    document.getElementById('new-username').value = '';
+    document.getElementById('new-password').value = '';
+    loadUsers();
+});
+
+async function loadESP32Config() {
+    const response = await fetch('/api/esp32');
+    const data = await response.json();
+    if (data.snippet) {
+        document.getElementById('esp32-config').textContent = data.snippet;
+    }
+}
+
+document.getElementById('copy-config').addEventListener('click', () => {
+    const config = document.getElementById('esp32-config').textContent;
+    navigator.clipboard.writeText(config).then(() => alert('Copied!'));
+});
+
+loadUsers();
+loadESP32Config();
+</script>
+{% endblock %}

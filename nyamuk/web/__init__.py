@@ -72,6 +72,39 @@ def create_app(config: dict = None) -> Flask:
         """Main dashboard page."""
         return render_template("dashboard.html")
 
+    @app.route("/users")
+    @login_required
+    def users_page():
+        """Users management page."""
+        return render_template("users.html")
+
+    @app.route("/config")
+    @login_required
+    def config_page():
+        """Configuration page."""
+        return render_template("config.html")
+
+    @app.route("/api/broker/start", methods=["POST"])
+    @login_required
+    def api_broker_start():
+        """Start the broker."""
+        success, message = broker_manager.start_broker()
+        return jsonify({"success": success, "message": message})
+
+    @app.route("/api/broker/stop", methods=["POST"])
+    @login_required
+    def api_broker_stop():
+        """Stop the broker."""
+        success, message = broker_manager.stop_broker()
+        return jsonify({"success": success, "message": message})
+
+    @app.route("/api/broker/restart", methods=["POST"])
+    @login_required
+    def api_broker_restart():
+        """Restart the broker."""
+        success, message = broker_manager.restart_broker()
+        return jsonify({"success": success, "message": message})
+
     @app.route("/api/status")
     @login_required
     def api_status():
