@@ -73,9 +73,9 @@ class ACLPage(Vertical):
                 yield Label("Access:", classes="form-label")
                 yield Select(
                     [
-                        ("readwrite", "Read/Write"),
-                        ("read", "Read Only"),
-                        ("write", "Write Only"),
+                        ("Read/Write", "readwrite"),
+                        ("Read Only", "read"),
+                        ("Write Only", "write"),
                     ],
                     value="readwrite",
                     id="access-select",

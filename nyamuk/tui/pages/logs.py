@@ -62,11 +62,11 @@ class LogsPage(Vertical):
                 yield Label("Level:", classes="filter-label")
                 yield Select(
                     [
-                        ("all", "All Levels"),
-                        ("info", "Info"),
-                        ("warning", "Warning"),
-                        ("error", "Error"),
-                        ("debug", "Debug"),
+                        ("All Levels", "all"),
+                        ("Info", "info"),
+                        ("Warning", "warning"),
+                        ("Error", "error"),
+                        ("Debug", "debug"),
                     ],
                     value="all",
                     id="level-select",

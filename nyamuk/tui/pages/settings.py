@@ -96,10 +96,10 @@ class SettingsPage(Vertical):
                 yield Label("Log Level:", classes="settings-label")
                 yield Select(
                     [
-                        ("DEBUG", "Debug"),
-                        ("INFO", "Info"),
-                        ("WARNING", "Warning"),
-                        ("ERROR", "Error"),
+                        ("Debug", "DEBUG"),
+                        ("Info", "INFO"),
+                        ("Warning", "WARNING"),
+                        ("Error", "ERROR"),
                     ],
                     value="INFO",
                     id="log-level-select",
