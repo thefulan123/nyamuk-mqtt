@@ -149,21 +149,23 @@ class MQTTMonitor:
 
     def publish(self, topic: str, payload: str, qos: int = 0, retain: bool = False) -> bool:
         """Publish a message."""
-        if not self._connected:
+        if not self._connected or self._client is None:
             return False
         try:
             result = self._client.publish(topic, payload, qos=qos, retain=retain)
-            return result.rc == mqtt.MQTT_ERR_SUCCESS
+            rc: int = result.rc
+            return rc == mqtt.MQTT_ERR_SUCCESS
         except Exception:
             return False
 
     def subscribe(self, topic: str, qos: int = 0) -> bool:
         """Subscribe to a topic."""
-        if not self._connected:
+        if not self._connected or self._client is None:
             return False
         try:
             result = self._client.subscribe(topic, qos=qos)
-            return result[0] == mqtt.MQTT_ERR_SUCCESS
+            rc_tuple: int = result[0]
+            return rc_tuple == mqtt.MQTT_ERR_SUCCESS
         except Exception:
             return False
 

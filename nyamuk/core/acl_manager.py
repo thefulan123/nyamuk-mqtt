@@ -80,7 +80,7 @@ class ACLManager:
             return []
 
         rules = []
-        current_block = []
+        current_block: list[str] = []
 
         for line in output.split("\n"):
             line = line.strip()
@@ -89,7 +89,7 @@ class ACLManager:
                     rule = ACLRule.from_string("\n".join(current_block))
                     if rule:
                         rules.append(rule)
-                    current_block = []
+                current_block = []
                 continue
 
             current_block.append(line)

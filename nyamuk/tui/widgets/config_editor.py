@@ -21,7 +21,7 @@ class ConfigEditor(Static):
 
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
-        self._content = ""
+        self._content: str = ""
 
     def compose(self) -> ComposeResult:
         yield Label("Configuration Editor", classes="editor-header")
@@ -38,6 +38,7 @@ class ConfigEditor(Static):
     def get_content(self) -> str:
         """Get current editor content."""
         try:
-            return self.query_one("#config-textarea", TextArea).text
+            text: str = self.query_one("#config-textarea", TextArea).text
+            return text
         except Exception:
             return self._content

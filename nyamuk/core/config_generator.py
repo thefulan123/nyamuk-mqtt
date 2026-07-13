@@ -83,7 +83,7 @@ class ConfigGenerator:
 
         return "\n".join(lines)
 
-    def generate_basic(self, port: int = 1883, password_file: str = None) -> str:
+    def generate_basic(self, port: int = 1883, password_file: Optional[str] = None) -> str:
         """Generate basic Mosquitto configuration."""
         return self.generate(
             port=port,
@@ -95,10 +95,10 @@ class ConfigGenerator:
     def generate_secure(
         self,
         port: int = 8883,
-        password_file: str = None,
-        cafile: str = None,
-        certfile: str = None,
-        keyfile: str = None,
+        password_file: Optional[str] = None,
+        cafile: Optional[str] = None,
+        certfile: Optional[str] = None,
+        keyfile: Optional[str] = None,
     ) -> str:
         """Generate secure Mosquitto configuration with TLS."""
         return self.generate(

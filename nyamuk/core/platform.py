@@ -48,7 +48,8 @@ class Platform:
             try:
                 import ctypes
 
-                return ctypes.windll.shell32.IsUserAnAdmin() != 0
+                result: bool = ctypes.windll.shell32.IsUserAnAdmin() != 0  # type: ignore[attr-defined]
+                return result
             except Exception:
                 return False
         return os.geteuid() == 0

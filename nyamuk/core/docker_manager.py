@@ -36,7 +36,8 @@ class DockerManager:
         """Check if Mosquitto container is running."""
         try:
             container = self.get_container()
-            return container.status == "running"
+            result: bool = container.status == "running"
+            return result
         except (FileNotFoundError, DockerException):
             return False
 
@@ -107,7 +108,8 @@ class DockerManager:
         try:
             container = self.get_container()
             logs = container.logs(tail=tail, follow=follow, timestamps=True)
-            return logs.decode("utf-8")
+            result: str = logs.decode("utf-8")
+            return result
         except (FileNotFoundError, DockerException) as e:
             return f"Error getting logs: {e}"
 

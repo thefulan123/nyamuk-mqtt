@@ -3,6 +3,7 @@
 import os
 from datetime import datetime
 from functools import wraps
+from typing import Optional
 
 from flask import Flask, jsonify, redirect, render_template, request, session, url_for
 from flask_socketio import SocketIO, emit
@@ -14,7 +15,7 @@ from nyamuk.core.provisioning import ESP32Provisioning
 from nyamuk.core.user_manager import UserManager
 
 
-def create_app(config: dict = None) -> Flask:
+def create_app(config: Optional[dict] = None) -> Flask:
     """Create and configure Flask application."""
     app = Flask(__name__, static_folder="static", template_folder="templates")
 
