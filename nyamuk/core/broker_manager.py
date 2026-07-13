@@ -102,15 +102,15 @@ class BrokerManager:
             **kwargs
         )
         
-        # Generate mosquitto.conf
+        # Generate mosquitto.conf (always listen on 1883 inside container)
         config_content = self.config_generator.generate(
-            port=port,
+            port=1883,
             allow_anonymous=config.allow_anonymous,
             persistence=config.persistence,
             persistence_location=config.persistence_location,
             log_dest=config.log_dest,
             max_connections=config.max_connections,
-            password_file=str(broker_dir / "passwd"),
+            password_file="/mosquitto/config/passwd",
         )
         
         config_file = broker_dir / "mosquitto.conf"
@@ -308,5 +308,8 @@ class BrokerManager:
                 "mosquitto_passwd", "-c", "-b", f"/tmp/passwd/{filepath.name}", username, password
             ]
             subprocess.run(cmd, capture_output=True, text=True, timeout=30)
+
+            # Fix permissions: mosquitto runs as uid 1883 inside container
+            filepath.chmod(0o644)
         except Exception as e:
             print(f"Error creating password file: {e}")

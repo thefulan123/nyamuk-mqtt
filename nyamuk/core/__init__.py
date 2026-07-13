@@ -1,21 +1,21 @@
 """Core modules for Nyamuk MQTT Manager."""
 
-from nyamuk.core.mosquitto import MosquittoManager
+from nyamuk.core.broker_manager import BrokerManager
 from nyamuk.core.docker_manager import DockerManager
 from nyamuk.core.user_manager import UserManager
 from nyamuk.core.acl_manager import ACLManager
-from nyamuk.core.mqtt_monitor import MQTTMonitor
 from nyamuk.core.log_parser import LogParser
-from nyamuk.core.validator import ConfigValidator
-from nyamuk.core.platform import Platform
+from nyamuk.core.port_scanner import PortScanner
+from nyamuk.core.config_generator import ConfigGenerator
+from nyamuk.core.provisioning import ESP32Provisioning
 
 __all__ = [
-    "MosquittoManager",
+    "BrokerManager",
     "DockerManager",
     "UserManager",
     "ACLManager",
-    "MQTTMonitor",
     "LogParser",
-    "ConfigValidator",
-    "Platform",
+    "PortScanner",
+    "ConfigGenerator",
+    "ESP32Provisioning",
 ]
