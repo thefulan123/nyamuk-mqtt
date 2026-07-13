@@ -1,6 +1,7 @@
 """Tests for ConfigValidator."""
 
 import pytest
+
 from nyamuk.core.validator import MosquittoConfig, NyamukConfig
 
 
@@ -10,7 +11,7 @@ class TestMosquittoConfig:
     def test_default_values(self):
         """Test default configuration values."""
         config = MosquittoConfig()
-        
+
         assert config.listener == 1883
         assert config.allow_anonymous is True
         assert config.persistence is True
@@ -69,7 +70,7 @@ class TestNyamukConfig:
     def test_default_values(self):
         """Test default configuration values."""
         config = NyamukConfig()
-        
+
         assert config.mqtt_broker == "localhost"
         assert config.mqtt_port == 1883
         assert config.topic_prefix == "nyamuk"

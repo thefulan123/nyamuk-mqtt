@@ -1,7 +1,7 @@
 """Tests for Platform utilities."""
 
-import pytest
 import platform
+
 from nyamuk.core.platform import Platform
 
 

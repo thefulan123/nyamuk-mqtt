@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nyamuk - MQTT Tester</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.0.1/socket.io.js"></script>
+    <style>
+        .tester-grid {
+            display: flex;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+        .publish-panel, .subscribe-panel {
+            background: #2d2d44;
+            border-radius: 8px;
+            padding: 20px;
+            flex: 1;
+            min-width: 350px;
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            color: #aaa;
+            font-size: 0.9em;
+        }
+        .form-group input, .form-group select, .form-group textarea {
+            width: 100%;
+            padding: 8px 12px;
+            background: #1e1e2e;
+            border: 1px solid #444;
+            color: #fff;
+            border-radius: 4px;
+            font-size: 14px;
+        }
+        .form-group textarea {
+            resize: vertical;
+            min-height: 60px;
+            font-family: monospace;
+        }
+        .form-row {
+            display: flex;
+            gap: 10px;
+            align-items: flex-start;
+        }
+        .form-row .form-group {
+            flex: 1;
+        }
+        .btn {
+            padding: 8px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+            margin-right: 8px;
+        }
+        .btn-primary { background: #3cb371; color: #fff; }
+        .btn-success { background: #228b22; color: #fff; }
+        .btn-danger { background: #ff6347; color: #fff; }
+        .btn-warning { background: #ffa500; color: #000; }
+        .btn-sm { padding: 5px 12px; font-size: 12px; }
+        .subscribe-toolbar {
+            display: flex;
+            gap: 10px;
+            align-items: flex-end;
+        }
+        .subscribe-toolbar .form-group {
+            flex: 1;
+            margin-bottom: 0;
+        }
+        .log-container {
+            background: #1e1e2e;
+            border-radius: 4px;
+            padding: 10px;
+            margin-top: 15px;
+            height: 400px;
+            overflow-y: auto;
+            font-family: monospace;
+            font-size: 13px;
+        }
+        .log-entry {
+            padding: 4px 0;
+            border-bottom: 1px solid #333;
+            color: #ccc;
+        }
+        .log-timestamp {
+            color: #888;
+        }
+        .log-topic {
+            color: #3cb371;
+        }
+        .log-payload {
+            color: #fff;
+            white-space: pre-wrap;
+            word-break: break-all;
+        }
+        .conn-status {
+            padding: 10px;
+            margin-bottom: 15px;
+            border-radius: 4px;
+            font-weight: bold;
+        }
+        .conn-connected {
+            background: #1a3a1a;
+            color: #3cb371;
+            border: 1px solid #3cb371;
+        }
+        .conn-disconnected {
+            background: #3a1a1a;
+            color: #ff6347;
+            border: 1px solid #ff6347;
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="nav-brand">Nyamuk</div>
+        <div class="nav-links">
+            <a href="/" class="nav-link">Dashboard</a>
+            <a href="/users" class="nav-link">Users</a>
+            <a href="/config" class="nav-link">Config</a>
+            <a href="/tester" class="nav-link">Tester</a>
+            <a href="/logout" class="nav-link">Logout</a>
+        </div>
+    </nav>
+
+    <main class="container">
+        <h2>MQTT Message Tester</h2>
+
+        <div id="conn-status" class="conn-status conn-disconnected">Not connected</div>
+
+        <div class="tester-grid">
+            <div class="publish-panel">
+                <h3>Publisher</h3>
+                <div class="form-group">
+                    <label>Topic</label>
+                    <input type="text" id="pub-topic" placeholder="nyamuk/test" value="nyamuk/test">
+                </div>
+                <div class="form-group">
+                    <label>Payload</label>
+                    <textarea id="pub-payload" placeholder="Hello MQTT!">Hello from Nyamuk!</textarea>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Data Type</label>
+                        <select id="pub-type">
+                            <option value="string">String</option>
+                            <option value="json">JSON</option>
+                            <option value="number">Number</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>QOS</label>
+                        <select id="pub-qos">
+                            <option value="0">0 - At most once</option>
+                            <option value="1">1 - At least once</option>
+                            <option value="2">2 - Exactly once</option>
+                        </select>
+                    </div>
+                </div>
+                <div>
+                    <button class="btn btn-primary" onclick="connect()">Connect</button>
+                    <button class="btn btn-success" onclick="publishMsg()">Publish</button>
+                    <button class="btn btn-danger" onclick="disconnect()">Disconnect</button>
+                </div>
+            </div>
+
+            <div class="subscribe-panel">
+                <h3>Subscriber</h3>
+                <div class="subscribe-toolbar">
+                    <div class="form-group">
+                        <label>Topic Filter</label>
+                        <input type="text" id="sub-topic" placeholder="#">
+                    </div>
+                    <button class="btn btn-primary btn-sm" onclick="subscribe()">Subscribe</button>
+                    <button class="btn btn-warning btn-sm" onclick="clearLog()">Clear</button>
+                </div>
+                <div class="log-container" id="msg-log"></div>
+            </div>
+        </div>
+    </main>
+
+    <footer class="footer">
+        <p>Nyamuk - Mosquitto MQTT Manager</p>
+    </footer>
+
+    <script>
+        const socket = io();
+
+        socket.on("connect", () => {
+            console.log("WebSocket connected");
+        });
+
+        socket.on("tester_message", (data) => {
+            addLogEntry(data.timestamp, data.topic, data.payload);
+        });
+
+        socket.on("tester_status", (data) => {
+            updateConnectionStatus(data.connected);
+        });
+
+        let connected = false;
+
+        function updateConnectionStatus(status) {
+            connected = status;
+            const el = document.getElementById("conn-status");
+            if (status) {
+                el.textContent = "Connected to broker";
+                el.className = "conn-status conn-connected";
+            } else {
+                el.textContent = "Not connected";
+                el.className = "conn-status conn-disconnected";
+            }
+        }
+
+        function addLogEntry(timestamp, topic, payload) {
+            const log = document.getElementById("msg-log");
+            const entry = document.createElement("div");
+            entry.className = "log-entry";
+            let ts = timestamp || new Date().toISOString();
+            ts = ts.substring(11, 19);
+            entry.innerHTML = `<span class="log-timestamp">[${ts}]</span> <span class="log-topic">${escapeHtml(topic)}:</span> <span class="log-payload">${escapeHtml(payload)}</span>`;
+            log.appendChild(entry);
+            log.scrollTop = log.scrollHeight;
+        }
+
+        function escapeHtml(text) {
+            const div = document.createElement("div");
+            div.textContent = text;
+            return div.innerHTML;
+        }
+
+        function connect() {
+            fetch("/api/tester/connect", { method: "POST" })
+                .then(r => r.json())
+                .then(d => {
+                    if (d.success) {
+                        updateConnectionStatus(true);
+                    }
+                    alert(d.message);
+                });
+        }
+
+        function disconnect() {
+            fetch("/api/tester/disconnect", { method: "POST" })
+                .then(r => r.json())
+                .then(d => {
+                    updateConnectionStatus(false);
+                    alert(d.message);
+                });
+        }
+
+        function publishMsg() {
+            const topic = document.getElementById("pub-topic").value.trim();
+            if (!topic) { alert("Topic is required"); return; }
+
+            const payload = document.getElementById("pub-payload").value;
+            const dataType = document.getElementById("pub-type").value;
+            const qos = parseInt(document.getElementById("pub-qos").value);
+
+            if (dataType === "json") {
+                try { JSON.parse(payload); } catch(e) { alert("Invalid JSON"); return; }
+            }
+            if (dataType === "number") {
+                if (isNaN(payload)) { alert("Invalid number"); return; }
+            }
+
+            fetch("/api/tester/publish", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ topic, payload, data_type: dataType, qos })
+            })
+            .then(r => r.json())
+            .then(d => alert(d.message));
+        }
+
+        function subscribe() {
+            const topic = document.getElementById("sub-topic").value.trim() || "#";
+            fetch("/api/tester/subscribe", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ topic })
+            })
+            .then(r => r.json())
+            .then(d => {
+                alert(d.message);
+                if (d.success) {
+                    addLogEntry(null, "system", `Subscribed to ${topic}`);
+                }
+            });
+        }
+
+        function clearLog() {
+            document.getElementById("msg-log").innerHTML = "";
+            fetch("/api/tester/clear", { method: "POST" });
+        }
+    </script>
+</body>
+</html>

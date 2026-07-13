@@ -1,5 +1,6 @@
 """Web Dashboard for Nyamuk MQTT Manager - v2.0."""
 
+import json
 import os
 from datetime import datetime
 from functools import wraps
@@ -11,6 +12,7 @@ from flask_socketio import SocketIO, emit
 from nyamuk.core.acl_manager import ACLManager
 from nyamuk.core.broker_manager import BrokerManager
 from nyamuk.core.log_parser import LogParser
+from nyamuk.core.mqtt_client import MQTTTestClient
 from nyamuk.core.provisioning import ESP32Provisioning
 from nyamuk.core.user_manager import UserManager
 
@@ -39,6 +41,7 @@ def create_app(config: Optional[dict] = None) -> tuple:
     user_manager = UserManager()
     acl_manager = ACLManager()
     log_parser = LogParser()
+    test_client: Optional[MQTTTestClient] = None
 
     def login_required(f):
         """Login required decorator."""
@@ -184,6 +187,120 @@ def create_app(config: Optional[dict] = None) -> tuple:
     def api_health():
         """Health check endpoint."""
         return jsonify({"status": "healthy", "timestamp": datetime.now().isoformat()})
+
+    @app.route("/tester")
+    @login_required
+    def tester_page():
+        """MQTT tester page."""
+        return render_template("tester.html")
+
+    def _get_test_client():
+        """Get or create test client."""
+        nonlocal test_client
+        if test_client is None or not test_client.is_connected:
+            conn_info = broker_manager.get_connection_info()
+            if not conn_info:
+                return None
+            host = conn_info.get("broker", "localhost").split(":")[0]
+            port = int(conn_info.get("port", 1883))
+            username = conn_info.get("username", "")
+            password = conn_info.get("password", "")
+            client = MQTTTestClient(
+                broker=host,
+                port=port,
+                username=username,
+                password=password,
+                client_id="nyamuk_web_tester",
+            )
+            if not client.connect():
+                return None
+            client.on_message(lambda msg: socketio.emit("tester_message", msg))
+            test_client = client
+        return test_client
+
+    @app.route("/api/tester/connect", methods=["POST"])
+    @login_required
+    def api_tester_connect():
+        """Connect test client."""
+        nonlocal test_client
+        client = _get_test_client()
+        if client:
+            socketio.emit("tester_status", {"connected": True})
+            return jsonify({"success": True, "message": "Connected to broker"})
+        return jsonify({"success": False, "message": "Failed to connect"})
+
+    @app.route("/api/tester/disconnect", methods=["POST"])
+    @login_required
+    def api_tester_disconnect():
+        """Disconnect test client."""
+        nonlocal test_client
+        if test_client:
+            test_client.disconnect()
+            test_client = None
+        socketio.emit("tester_status", {"connected": False})
+        return jsonify({"success": True, "message": "Disconnected"})
+
+    @app.route("/api/tester/publish", methods=["POST"])
+    @login_required
+    def api_tester_publish():
+        """Publish a test message."""
+        client = _get_test_client()
+        if not client:
+            return jsonify({"success": False, "message": "Not connected"})
+
+        data = request.get_json()
+        topic = data.get("topic", "").strip()
+        if not topic:
+            return jsonify({"success": False, "message": "Topic is required"})
+
+        payload = data.get("payload", "")
+        data_type = data.get("data_type", "string")
+        qos = int(data.get("qos", 0))
+
+        if data_type == "json":
+            try:
+                payload = json.loads(payload)
+            except json.JSONDecodeError:
+                return jsonify({"success": False, "message": "Invalid JSON"})
+        elif data_type == "number":
+            try:
+                payload = float(payload) if "." in str(payload) else int(payload)
+            except ValueError:
+                return jsonify({"success": False, "message": "Invalid number"})
+
+        success = client.publish(topic, payload, qos=qos)
+        return jsonify(
+            {
+                "success": success,
+                "message": "Published" if success else "Publish failed",
+            }
+        )
+
+    @app.route("/api/tester/subscribe", methods=["POST"])
+    @login_required
+    def api_tester_subscribe():
+        """Subscribe to a topic."""
+        client = _get_test_client()
+        if not client:
+            return jsonify({"success": False, "message": "Not connected"})
+
+        data = request.get_json()
+        topic = data.get("topic", "#").strip()
+        success = client.subscribe(topic)
+        return jsonify(
+            {
+                "success": success,
+                "message": f"Subscribed to {topic}" if success else "Subscribe failed",
+            }
+        )
+
+    @app.route("/api/tester/clear", methods=["POST"])
+    @login_required
+    def api_tester_clear():
+        """Clear received messages."""
+        if test_client:
+            test_client.clear_messages()
+        return jsonify({"success": True})
 
     # SocketIO events
     @socketio.on("connect")

@@ -9,6 +9,7 @@ from nyamuk.tui.pages.config import ConfigPage
 from nyamuk.tui.pages.create import CreatePage
 from nyamuk.tui.pages.home import HomePage
 from nyamuk.tui.pages.logs import LogsPage
+from nyamuk.tui.pages.tester import TesterPage
 from nyamuk.tui.pages.users import UsersPage
 
 NYAMUK_THEME = Theme(
@@ -24,7 +25,7 @@ NYAMUK_THEME = Theme(
     error="#ff6347",
 )
 
-PAGE_IDS = ["home", "create", "users", "acl", "config", "logs"]
+PAGE_IDS = ["home", "create", "users", "acl", "config", "logs", "tester"]
 
 
 class NyamukTUI(App):
@@ -43,6 +44,12 @@ class NyamukTUI(App):
     #home.active, #create.active, #users.active, #acl.active, #config.active, #logs.active {
         display: block;
     }
+    #tester {
+        display: none;
+    }
+    #tester.active {
+        display: block;
+    }
     """
 
     BINDINGS = [
@@ -53,6 +60,7 @@ class NyamukTUI(App):
         Binding("a", "switch_page('acl')", "ACL"),
         Binding("s", "switch_page('config')", "Config"),
         Binding("l", "switch_page('logs')", "Logs"),
+        Binding("t", "switch_page('tester')", "Tester"),
     ]
 
     def compose(self) -> ComposeResult:
@@ -62,6 +70,7 @@ class NyamukTUI(App):
         yield ACLPage(id="acl")
         yield ConfigPage(id="config")
         yield LogsPage(id="logs")
+        yield TesterPage(id="tester")
 
     def on_mount(self) -> None:
         self.action_switch_page("home")
