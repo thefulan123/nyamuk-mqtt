@@ -2,7 +2,7 @@
 
 {% block content %}
 <div class="dashboard">
-    <h2>⚙️ Broker Configuration</h2>
+    <h2>Broker Configuration</h2>
 
     <div class="section">
         <h3>Current Config</h3>
@@ -30,9 +30,9 @@
     <div class="section">
         <h3>Quick Actions</h3>
         <div class="button-group">
-            <button id="start-btn" class="btn btn-success">▶ Start</button>
-            <button id="stop-btn" class="btn btn-danger">⏹ Stop</button>
-            <button id="restart-btn" class="btn btn-warning">🔄 Restart</button>
+            <button id="start-btn" class="btn btn-success">Start</button>
+            <button id="stop-btn" class="btn btn-danger">Stop</button>
+            <button id="restart-btn" class="btn btn-warning">Restart</button>
         </div>
     </div>
 </div>
@@ -43,7 +43,7 @@ async function loadStatus() {
     const data = await response.json();
     const status = data.status;
     document.getElementById('broker-status').textContent =
-        status.status === 'running' ? '🟢 Running' : '🔴 ' + status.status;
+        status.status === 'running' ? 'Running' : status.status;
     document.getElementById('broker-port').textContent = status.port || '--';
     document.getElementById('broker-created').textContent =
         status.created_at ? status.created_at.substring(0, 19) : '--';

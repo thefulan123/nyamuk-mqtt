@@ -10,7 +10,7 @@ from typing import Optional
 @click.group()
 @click.version_option(version="2.0.0", prog_name="nyamuk")
 def main():
-    """🦟 Nyamuk - MQTT Broker Factory
+    """Nyamuk - MQTT Broker Factory
 
     Create your MQTT broker in 30 seconds - zero coding required.
     """
@@ -37,7 +37,7 @@ def web(host: str, port: int, debug: bool):
     import os
     os.environ["NYAMUK_DEBUG"] = "true" if debug else "false"
 
-    click.echo(f"🦟 Nyamuk Web Dashboard starting on http://{host}:{port}")
+    click.echo(f"Nyamuk Web Dashboard starting on http://{host}:{port}")
     socketio.run(app, host=host, port=port, debug=debug, allow_unsafe_werkzeug=True)
 
 
@@ -52,7 +52,7 @@ def create():
 
     # Check if broker already exists
     if manager.get_broker_config():
-        click.echo("❌ Broker already exists. Delete it first with: nyamuk delete")
+        click.echo("[ERROR] Broker already exists. Delete it first with: nyamuk delete")
         sys.exit(1)
 
     # Get broker name
@@ -64,7 +64,7 @@ def create():
 
     # Check port
     if not scanner.is_port_free(port):
-        click.echo(f"❌ Port {port} is already in use")
+        click.echo(f"[ERROR] Port {port} is already in use")
         sys.exit(1)
 
     # Get password
@@ -78,12 +78,12 @@ def create():
     )
 
     if success:
-        click.echo(f"✅ {message}")
+        click.echo(f"[OK] {message}")
         click.echo("\nNext steps:")
         click.echo(f"  1. Start broker: nyamuk start")
         click.echo(f"  2. View connection info: nyamuk status")
     else:
-        click.echo(f"❌ {message}")
+        click.echo(f"[ERROR] {message}")
         sys.exit(1)
 
 
@@ -95,9 +95,9 @@ def start():
 
     success, message = manager.start_broker()
     if success:
-        click.echo(f"✅ {message}")
+        click.echo(f"[OK] {message}")
     else:
-        click.echo(f"❌ {message}")
+        click.echo(f"[ERROR] {message}")
         sys.exit(1)
 
 
@@ -109,9 +109,9 @@ def stop():
 
     success, message = manager.stop_broker()
     if success:
-        click.echo(f"✅ {message}")
+        click.echo(f"[OK] {message}")
     else:
-        click.echo(f"❌ {message}")
+        click.echo(f"[ERROR] {message}")
         sys.exit(1)
 
 
@@ -123,9 +123,9 @@ def restart():
 
     success, message = manager.restart_broker()
     if success:
-        click.echo(f"✅ {message}")
+        click.echo(f"[OK] {message}")
     else:
-        click.echo(f"❌ {message}")
+        click.echo(f"[ERROR] {message}")
         sys.exit(1)
 
 
@@ -138,9 +138,9 @@ def delete():
 
     success, message = manager.delete_broker()
     if success:
-        click.echo(f"✅ {message}")
+        click.echo(f"[OK] {message}")
     else:
-        click.echo(f"❌ {message}")
+        click.echo(f"[ERROR] {message}")
         sys.exit(1)
 
 
@@ -152,19 +152,19 @@ def status():
 
     config = manager.get_broker_config()
     if not config:
-        click.echo("⚠️  No broker configured. Run: nyamuk create")
+        click.echo("[WARNING] No broker configured. Run: nyamuk create")
         return
 
     status = manager.get_status()
     conn_info = manager.get_connection_info()
 
-    click.echo("🦟 Nyamuk MQTT Broker Status:")
+    click.echo("Nyamuk MQTT Broker Status:")
     click.echo(f"  Name: {status['name']}")
-    click.echo(f"  Status: {'🟢 Running' if status['status'] == 'running' else '🔴 Stopped'}")
+    click.echo(f"  Status: {'Running' if status['status'] == 'running' else 'Stopped'}")
     click.echo(f"  Port: {status['port']}")
     click.echo(f"  Created: {status['created_at'][:19]}")
 
-    click.echo("\n📡 Connection Info:")
+    click.echo("\nConnection Info:")
     click.echo(f"  Broker: {conn_info['broker']}")
     click.echo(f"  Username: {conn_info['username']}")
     click.echo(f"  Password: {conn_info['password']}")
@@ -181,7 +181,7 @@ def esp32():
     config = manager.get_broker_config()
 
     if not config:
-        click.echo("⚠️  No broker configured. Run: nyamuk create")
+        click.echo("[WARNING] No broker configured. Run: nyamuk create")
         return
 
     conn_info = manager.get_connection_info()
@@ -229,9 +229,9 @@ def user_add(username: str, password: str):
 
     success, message = manager.add_user(username, password)
     if success:
-        click.echo(f"✅ {message}")
+        click.echo(f"[OK] {message}")
     else:
-        click.echo(f"❌ {message}", err=True)
+        click.echo(f"[ERROR] {message}", err=True)
         sys.exit(1)
 
 
@@ -245,9 +245,9 @@ def user_delete(username: str):
 
     success, message = manager.delete_user(username)
     if success:
-        click.echo(f"✅ {message}")
+        click.echo(f"[OK] {message}")
     else:
-        click.echo(f"❌ {message}", err=True)
+        click.echo(f"[ERROR] {message}", err=True)
         sys.exit(1)
 
 
@@ -283,9 +283,9 @@ def acl_add(username: str, topic: str, access: str):
 
     success, message = manager.add_rule(username, topic, access)
     if success:
-        click.echo(f"✅ {message}")
+        click.echo(f"[OK] {message}")
     else:
-        click.echo(f"❌ {message}", err=True)
+        click.echo(f"[ERROR] {message}", err=True)
         sys.exit(1)
 
 

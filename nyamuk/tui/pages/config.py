@@ -55,7 +55,7 @@ class ConfigPage(Vertical):
         self.mosquitto_manager = MosquittoManager()
 
     def compose(self) -> ComposeResult:
-        yield Label("⚙️ Broker Configuration", classes="config-header")
+        yield Label("Broker Configuration", classes="config-header")
 
         with Container(classes="config-section"):
             yield Label("Network Settings", classes="section-title")

@@ -73,7 +73,7 @@ class HomePage(Vertical):
         self.broker_manager = BrokerManager()
 
     def compose(self) -> ComposeResult:
-        yield Label("🦟 Nyamuk - MQTT Broker Factory", classes="home-header")
+        yield Label("Nyamuk - MQTT Broker Factory", classes="home-header")
 
         # Broker Status
         with Container(classes="status-section"):
@@ -111,7 +111,7 @@ class HomePage(Vertical):
         config = self.broker_manager.get_broker_config()
         
         if not config:
-            self.query_one("#status-text", Label).update("⚠️ No broker configured")
+            self.query_one("#status-text", Label).update("No broker configured")
             self.query_one("#status-text", Label).add_class("not-configured")
             self.query_one("#port-text", Label).update("Port: --")
             self.query_one("#created-text", Label).update("Created: --")
@@ -125,7 +125,7 @@ class HomePage(Vertical):
         status = self.broker_manager.get_status()
         
         # Update status
-        status_icon = "🟢" if status["status"] == "running" else "🔴"
+        status_icon = "+" if status["status"] == "running" else "-"
         self.query_one("#status-text", Label).update(f"{status_icon} {status['status'].upper()}")
         self.query_one("#port-text", Label).update(f"Port: {status['port']}")
         self.query_one("#created-text", Label).update(f"Created: {status['created_at'][:19]}")

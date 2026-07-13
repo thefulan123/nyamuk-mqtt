@@ -207,7 +207,7 @@ def main():
     host = os.getenv("WEB_HOST", "0.0.0.0")
     debug = os.getenv("NYAMUK_DEBUG", "false").lower() == "true"
 
-    print(f"🦟 Nyamuk Web Dashboard starting on http://{host}:{port}")
+    print(f"Nyamuk Web Dashboard starting on http://{host}:{port}")
     socketio.run(app, host=host, port=port, debug=debug, allow_unsafe_werkzeug=True)
 
 

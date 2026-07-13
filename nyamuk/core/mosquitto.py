@@ -118,13 +118,13 @@ class MosquittoManager:
 
         # Auth warning
         if config.get("allow_anonymous", True):
-            errors.append("⚠️  Warning: Anonymous access enabled")
+            errors.append("Warning: Anonymous access enabled")
 
         # TLS validation
         tls_keys = ["cafile", "certfile", "keyfile"]
         tls_present = [k for k in tls_keys if k in config]
         if tls_present and len(tls_present) < 3:
-            errors.append("⚠️  Warning: Incomplete TLS configuration")
+            errors.append("Warning: Incomplete TLS configuration")
 
         return len(errors) == 0, errors
 

@@ -58,7 +58,7 @@ class SettingsPage(Vertical):
         self.config_path = Path("config.json")
 
     def compose(self) -> ComposeResult:
-        yield Label("⚙️ Settings", classes="settings-header")
+        yield Label("Settings", classes="settings-header")
 
         with Container(classes="settings-section"):
             yield Label("MQTT Broker", classes="section-title")

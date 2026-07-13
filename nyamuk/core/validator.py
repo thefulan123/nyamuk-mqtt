@@ -37,7 +37,7 @@ class MosquittoConfig(BaseModel):
     def validate_auth(cls, v):
         if v:
             import warnings
-            warnings.warn("⚠️  Warning: Anonymous access enabled. Consider disabling for production.")
+            warnings.warn("Warning: Anonymous access enabled. Consider disabling for production.")
         return v
 
     @validator("max_inflight_messages")

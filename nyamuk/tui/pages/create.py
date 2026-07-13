@@ -66,13 +66,13 @@ class CreatePage(Vertical):
         self.port_scanner = PortScanner()
 
     def compose(self) -> ComposeResult:
-        yield Label("➕ Create New Broker", classes="create-header")
+        yield Label("Create New Broker", classes="create-header")
 
         # Check if broker already exists
         existing = self.broker_manager.get_broker_config()
         if existing:
             yield Label(
-                "⚠️ Broker already exists. Delete it first before creating a new one.",
+                "Broker already exists. Delete it first before creating a new one.",
                 classes="error-message"
             )
             return
@@ -111,9 +111,9 @@ class CreatePage(Vertical):
         try:
             port = int(port_str)
             if self.port_scanner.is_port_free(port):
-                self.notify(f"✅ Port {port} is available", severity="success")
+                self.notify(f"Port {port} is available", severity="success")
             else:
-                self.notify(f"❌ Port {port} is already in use", severity="error")
+                self.notify(f"Port {port} is already in use", severity="error")
         except ValueError:
             self.notify("Invalid port number", severity="error")
 

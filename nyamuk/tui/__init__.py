@@ -31,7 +31,7 @@ NYAMUK_THEME = Theme(
 class NyamukTUI(App):
     """Nyamuk TUI Application - v2.0."""
 
-    TITLE = "🦟 Nyamuk - MQTT Broker Factory"
+    TITLE = "Nyamuk - MQTT Broker Factory"
     SUB_TITLE = "Create your MQTT broker in 30 seconds"
 
     CSS = """

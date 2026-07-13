@@ -1,33 +1,33 @@
-# 🦟 Nyamuk v2.0
+# Nyamuk v2.0
 
 > **MQTT Broker Factory** - Create your MQTT broker in 30 seconds, zero coding required.
 
 No-code MQTT broker configurator for VPS that lets non-technical users create, configure, and manage Mosquitto MQTT brokers with TUI and Web dashboard interfaces, plus ESP32 provisioning.
 
-## ✨ What is Nyamuk?
+## What is Nyamuk?
 
 ```
-┌─────────────────────────────────────────────────────────┐
-│                    NYAMUK v2.0                           │
-│                                                         │
-│  User creates broker ──→ Nyamuk configures ──→ Ready   │
-│       (3 clicks)            (automatic)         (30s)   │
-│                                                         │
-└─────────────────────────────────────────────────────────┘
++-------------------------------------------------------------+
+|                    NYAMUK v2.0                               |
+|                                                             |
+|  User creates broker --> Nyamuk configures --> Ready         |
+|       (3 clicks)            (automatic)         (30s)       |
+|                                                             |
++-------------------------------------------------------------+
 ```
 
 **Nyamuk** is a "broker factory" - you click, configure, and your broker is ready. No coding required. Accessible to ordinary people.
 
-## 🎯 Philosophy
+## Philosophy
 
 ```
-Broker = "Dumb Router" (cuma teruskan pesan)
-Topics = Dikonfigurasi di CLIENT (ESP32, Node-RED)
+Broker = "Dumb Router" (just forwards messages)
+Topics = Configured by CLIENT (ESP32, Node-RED)
 Nyamuk = Configures broker (port, auth, ACL)
 User = Creates broker in 30 seconds, ZERO coding
 ```
 
-## 🚀 Features
+## Features
 
 | Feature | Description |
 |---------|-------------|
@@ -41,7 +41,7 @@ User = Creates broker in 30 seconds, ZERO coding
 | **ACL Management** | Topic-based access control |
 | **Real-time Monitoring** | Live broker stats & logs |
 
-## 📦 Quick Start
+## Quick Start
 
 ### Installation
 
@@ -79,12 +79,12 @@ nyamuk start
 nyamuk status
 
 # Output:
-# 🦟 Nyamuk MQTT Broker Status:
+# Nyamuk MQTT Broker Status:
 #   Name: my_broker
-#   Status: 🟢 Running
+#   Status: Running
 #   Port: 1883
 #
-# 📡 Connection Info:
+# Connection Info:
 #   Broker: 192.168.1.100:1883
 #   Username: nyamuk
 #   Password: abc123xyz
@@ -100,7 +100,7 @@ nyamuk esp32
 # Copy output to your Arduino sketch
 ```
 
-## 🖥️ Interfaces
+## Interfaces
 
 ### 1. CLI (Command Line)
 
@@ -136,12 +136,12 @@ nyamuk tui
 ```
 
 **Pages:**
-- 🏠 **Home** - Status, connection info, ESP32 config snippet
-- ➕ **Create** - Create new broker (3-click wizard)
-- 👥 **Users** - User management
-- 🔒 **ACL** - Access control rules
-- ⚙️ **Config** - Configuration editor
-- 📋 **Logs** - Real-time log viewer
+- **Home** - Status, connection info, ESP32 config snippet
+- **Create** - Create new broker (3-click wizard)
+- **Users** - User management
+- **ACL** - Access control rules
+- **Config** - Configuration editor
+- **Logs** - Real-time log viewer
 
 ### 3. Web Dashboard (Browser)
 
@@ -159,7 +159,7 @@ nyamuk web --port 8080
 - User & ACL management
 - Log viewer
 
-## 🔧 Configuration
+## Configuration
 
 ### Environment Variables
 
@@ -183,13 +183,13 @@ Nyamuk generates `mosquitto.conf` automatically. Advanced users can edit:
 
 ```bash
 # Edit via TUI
-nyamuk tui → Config page
+nyamuk tui -> Config page
 
 # Or manually edit
 /opt/mosquitto/config/mosquitto.conf
 ```
 
-## 📁 Project Structure
+## Project Structure
 
 ```
 nyamuk-mqtt/
@@ -225,13 +225,13 @@ nyamuk-mqtt/
 └── pyproject.toml          # Package config
 ```
 
-## 🛠️ Prerequisites
+## Prerequisites
 
 - Python 3.8+
 - Docker (for Mosquitto)
 - SSH access to VPS
 
-## 📚 Documentation
+## Documentation
 
 - [Installation Guide](docs/INSTALLATION.md)
 - [Configuration Reference](docs/CONFIGURATION.md)
@@ -241,22 +241,22 @@ nyamuk-mqtt/
 - [Contributing](docs/CONTRIBUTING.md)
 - [Changelog](docs/CHANGELOG.md)
 
-## 🔐 Security
+## Security
 
 - Passwords stored in hashed format
 - ACL-based topic access control
 - Configurable web dashboard authentication
 - No hardcoded secrets
 
-## 🤝 Contributing
+## Contributing
 
 Contributions welcome! See [CONTRIBUTING.md](docs/CONTRIBUTING.md).
 
-## 📄 License
+## License
 
 MIT License - see [LICENSE](LICENSE) for details.
 
-## 🙏 Acknowledgments
+## Acknowledgments
 
 - [Mosquitto](https://mosquitto.org/) - MQTT Broker
 - [Textual](https://textual.textualize.io/) - TUI Framework
@@ -265,4 +265,4 @@ MIT License - see [LICENSE](LICENSE) for details.
 
 ---
 
-**Made with ❤️ for IoT community** | **[GitHub](https://github.com/thefulan123/nyamuk-mqtt)** | **Issues & Feedback**
+**Made for IoT community** | **[GitHub](https://github.com/thefulan123/nyamuk-mqtt)** | **Issues & Feedback**

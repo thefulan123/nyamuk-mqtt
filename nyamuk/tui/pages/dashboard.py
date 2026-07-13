@@ -79,7 +79,7 @@ class DashboardPage(Vertical):
         self._messages_card: StatusCard | None = None
 
     def compose(self) -> ComposeResult:
-        yield Label("🦟 Nyamuk Dashboard", classes="title")
+        yield Label("Nyamuk Dashboard", classes="title")
 
         with Horizontal(classes="status-grid"):
             self._status_card = StatusCard("Status", "Checking...")
@@ -110,11 +110,11 @@ class DashboardPage(Vertical):
             status = self.docker_manager.get_status()
 
             if status.get("status") == "running":
-                self._status_card.update_value("✅ Running")
+                self._status_card.update_value("Running")
                 self._status_card.id = "connected"
                 self._uptime_card.update_value(status.get("started_at", "N/A")[:19])
             else:
-                self._status_card.update_value("❌ Stopped")
+                self._status_card.update_value("Stopped")
                 self._status_card.id = "disconnected"
                 self._uptime_card.update_value("N/A")
 

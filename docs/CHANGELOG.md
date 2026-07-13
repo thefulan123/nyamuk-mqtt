@@ -7,7 +7,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [2.0.0] - 2026-07-13
 
-### 🎯 MAJOR: Single Broker Focus
+### MAJOR: Single Broker Focus
 
 **BREAKING CHANGES:**
 - Focus on single broker (removed multi-instance complexity)
@@ -16,8 +16,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 **New Philosophy:**
 ```
-Broker = "Dumb Router" (cuma teruskan pesan)
-Topics = Dikonfigurasi di CLIENT (ESP32, Node-RED)
+Broker = "Dumb Router" (just forwards messages)
+Topics = Configured by CLIENT (ESP32, Node-RED)
 Nyamuk = Configures broker (port, auth, ACL)
 User = Creates broker in 30 seconds, ZERO coding
 ```
@@ -48,12 +48,12 @@ User = Creates broker in 30 seconds, ZERO coding
   - One-click copy to clipboard
 
 - **TUI Pages:**
-  - 🏠 **Home** - Status, connection info, ESP32 config snippet
-  - ➕ **Create** - 3-click broker creation wizard
-  - 👥 **Users** - User management
-  - 🔒 **ACL** - Access control rules
-  - ⚙️ **Config** - Configuration editor
-  - 📋 **Logs** - Real-time log viewer
+  - **Home** - Status, connection info, ESP32 config snippet
+  - **Create** - 3-click broker creation wizard
+  - **Users** - User management
+  - **ACL** - Access control rules
+  - **Config** - Configuration editor
+  - **Logs** - Real-time log viewer
 
 - **Web Dashboard:**
   - Simple, clean interface with cards layout

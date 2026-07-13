@@ -57,7 +57,7 @@ class ACLPage(Vertical):
         self.acl_manager = ACLManager()
 
     def compose(self) -> ComposeResult:
-        yield Label("🔐 Access Control List", classes="acl-header")
+        yield Label("Access Control List", classes="acl-header")
 
         with Container(classes="add-rule-form"):
             yield Label("Add New Rule", classes="section-title")

@@ -58,7 +58,7 @@ class UsersPage(Vertical):
         self.user_manager = UserManager()
 
     def compose(self) -> ComposeResult:
-        yield Label("👥 MQTT User Management", classes="users-header")
+        yield Label("MQTT User Management", classes="users-header")
 
         with Container(classes="add-user-form"):
             yield Label("Add New User", classes="section-title")

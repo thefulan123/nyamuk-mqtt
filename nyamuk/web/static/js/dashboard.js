@@ -31,7 +31,7 @@ socket.on('message_received', function(data) {
 function updateConnectionStatus(connected) {
     const indicator = document.getElementById('connection-status');
     if (indicator) {
-        indicator.textContent = connected ? '🟢 Connected' : '🔴 Disconnected';
+        indicator.textContent = connected ? 'Connected' : 'Disconnected';
         indicator.className = connected ? 'status-connected' : 'status-disconnected';
     }
 }
@@ -44,7 +44,7 @@ function updateDashboard(data) {
     // Update status
     const statusEl = document.getElementById('broker-status');
     if (statusEl) {
-        statusEl.textContent = status.status === 'running' ? '✅ Running' : '❌ Stopped';
+        statusEl.textContent = status.status === 'running' ? 'Running' : 'Stopped';
         statusEl.className = status.status === 'running' ? 'stat-value success' : 'stat-value error';
     }
 

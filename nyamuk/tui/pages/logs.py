@@ -56,7 +56,7 @@ class LogsPage(Vertical):
         self._log_entries = []
 
     def compose(self) -> ComposeResult:
-        yield Label("📋 Real-time Logs", classes="logs-header")
+        yield Label("Real-time Logs", classes="logs-header")
 
         with Container(classes="filter-bar"):
             with Horizontal(classes="filter-row"):
