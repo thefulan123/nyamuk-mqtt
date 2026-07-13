@@ -135,7 +135,7 @@ class LogsPage(Vertical):
             with open(export_path, "w", encoding="utf-8") as f:
                 json.dump(data, f, indent=2)
 
-            self.notify(f"Logs exported to {export_path}", severity="success")
+            self.notify(f"Logs exported to {export_path}", severity="information")
         except Exception as e:
             self.notify(f"Export error: {e}", severity="error")
 

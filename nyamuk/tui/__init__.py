@@ -22,9 +22,9 @@ NYAMUK_THEME = Theme(
     success="#3cb371",
     warning="#ffa500",
     error="#ff6347",
-    text="#ffffff",
-    text_muted="#888888",
 )
+
+PAGE_IDS = ["home", "create", "users", "acl", "config", "logs"]
 
 
 class NyamukTUI(App):
@@ -36,6 +36,12 @@ class NyamukTUI(App):
     CSS = """
     Screen {
         background: $background;
+    }
+    #home, #create, #users, #acl, #config, #logs {
+        display: none;
+    }
+    #home.active, #create.active, #users.active, #acl.active, #config.active, #logs.active {
+        display: block;
     }
     """
 
@@ -58,10 +64,15 @@ class NyamukTUI(App):
         yield LogsPage(id="logs")
 
     def on_mount(self) -> None:
-        self.switch_page("home")
+        self.action_switch_page("home")
 
     def action_switch_page(self, page_name: str) -> None:
-        self.switch_page(page_name)
+        for pid in PAGE_IDS:
+            widget = self.query_one(f"#{pid}")
+            if pid == page_name:
+                widget.add_class("active")
+            else:
+                widget.remove_class("active")
 
 
 def main():

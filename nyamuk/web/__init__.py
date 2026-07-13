@@ -15,7 +15,7 @@ from nyamuk.core.provisioning import ESP32Provisioning
 from nyamuk.core.user_manager import UserManager
 
 
-def create_app(config: Optional[dict] = None) -> Flask:
+def create_app(config: Optional[dict] = None) -> tuple:
     """Create and configure Flask application."""
     app = Flask(__name__, static_folder="static", template_folder="templates")
 

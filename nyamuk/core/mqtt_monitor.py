@@ -9,7 +9,7 @@ from typing import Any, Callable, Dict, List, Optional
 try:
     import paho.mqtt.client as mqtt
 except ImportError:
-    mqtt = None
+    mqtt = None  # type: ignore[assignment]
 
 
 class MQTTMonitor:

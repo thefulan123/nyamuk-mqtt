@@ -126,7 +126,7 @@ class ConfigPage(Vertical):
             }
 
             if self.mosquitto_manager.write(config):
-                self.notify("Configuration saved successfully!", severity="success")
+                self.notify("Configuration saved successfully!", severity="information")
             else:
                 self.notify("Failed to save configuration", severity="error")
 
@@ -140,7 +140,7 @@ class ConfigPage(Vertical):
         try:
             is_valid, errors = self.mosquitto_manager.validate()
             if is_valid:
-                self.notify("Configuration is valid!", severity="success")
+                self.notify("Configuration is valid!", severity="information")
             else:
                 for error in errors:
                     self.notify(error, severity="warning")

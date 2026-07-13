@@ -2,7 +2,7 @@
 
 from textual.app import ComposeResult
 from textual.containers import Container, Horizontal, Vertical
-from textual.widgets import Button, Input, Label, Password, Switch
+from textual.widgets import Button, Input, Label, Switch
 
 from nyamuk.core.broker_manager import BrokerManager
 from nyamuk.core.port_scanner import PortScanner
@@ -32,7 +32,7 @@ class CreatePage(Vertical):
     .form-label {
         width: 35%;
     }
-    Input, Password {
+    Input {
         width: 65%;
     }
     Switch {
@@ -90,7 +90,9 @@ class CreatePage(Vertical):
 
             with Horizontal(classes="form-row"):
                 yield Label("Password:", classes="form-label")
-                yield Password(placeholder="Leave empty for auto-generate", id="password-input")
+                yield Input(
+                    placeholder="Leave empty for auto-generate", id="password-input", password=True
+                )
 
             with Horizontal(classes="form-row"):
                 yield Label("Allow Anonymous:", classes="form-label")
@@ -110,7 +112,7 @@ class CreatePage(Vertical):
         try:
             port = int(port_str)
             if self.port_scanner.is_port_free(port):
-                self.notify(f"Port {port} is available", severity="success")
+                self.notify(f"Port {port} is available", severity="information")
             else:
                 self.notify(f"Port {port} is already in use", severity="error")
         except ValueError:
@@ -120,7 +122,7 @@ class CreatePage(Vertical):
         """Create the broker."""
         name = self.query_one("#name-input", Input).value.strip()
         port_str = self.query_one("#port-input", Input).value.strip()
-        password = self.query_one("#password-input", Password).value
+        password = self.query_one("#password-input", Input).value
         allow_anonymous = self.query_one("#anonymous-switch", Switch).value
         persistence = self.query_one("#persistence-switch", Switch).value
 
@@ -144,11 +146,11 @@ class CreatePage(Vertical):
         )
 
         if success:
-            self.notify(message, severity="success")
+            self.notify(message, severity="information")
             # Auto-start broker
             start_success, start_msg = self.broker_manager.start_broker()
             if start_success:
-                self.notify("Broker started automatically", severity="success")
+                self.notify("Broker started automatically", severity="information")
             # Refresh page
             self.refresh()
         else:

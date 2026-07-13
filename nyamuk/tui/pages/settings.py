@@ -154,7 +154,7 @@ class SettingsPage(Vertical):
             with open(self.config_path, "w", encoding="utf-8") as f:
                 json.dump(config, f, indent=2)
 
-            self.notify("Settings saved successfully!", severity="success")
+            self.notify("Settings saved successfully!", severity="information")
 
         except ValueError as e:
             self.notify(f"Invalid value: {e}", severity="error")

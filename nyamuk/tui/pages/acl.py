@@ -126,7 +126,7 @@ class ACLPage(Vertical):
 
         success, message = self.acl_manager.add_rule(username, topic, access)
         if success:
-            self.notify(message, severity="success")
+            self.notify(message, severity="information")
             self._refresh_rules()
             # Clear inputs
             self.query_one("#username-input", Input).value = ""
@@ -146,7 +146,7 @@ class ACLPage(Vertical):
 
         success, message = self.acl_manager.delete_rule(username, topic)
         if success:
-            self.notify(message, severity="success")
+            self.notify(message, severity="information")
             self._refresh_rules()
         else:
             self.notify(message, severity="error")

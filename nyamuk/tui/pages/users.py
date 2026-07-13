@@ -2,7 +2,7 @@
 
 from textual.app import ComposeResult
 from textual.containers import Container, Horizontal, Vertical
-from textual.widgets import Button, DataTable, Input, Label, Password
+from textual.widgets import Button, DataTable, Input, Label
 
 from nyamuk.core.user_manager import UserManager
 
@@ -32,7 +32,7 @@ class UsersPage(Vertical):
     .form-label {
         width: 30%;
     }
-    Input, Password {
+    Input {
         width: 70%;
     }
     .button-row {
@@ -68,11 +68,11 @@ class UsersPage(Vertical):
 
             with Horizontal(classes="form-row"):
                 yield Label("Password:", classes="form-label")
-                yield Password(placeholder="Min 8 chars", id="password-input")
+                yield Input(placeholder="Min 8 chars", id="password-input", password=True)
 
             with Horizontal(classes="form-row"):
                 yield Label("Confirm:", classes="form-label")
-                yield Password(placeholder="Confirm password", id="confirm-input")
+                yield Input(placeholder="Confirm password", id="confirm-input", password=True)
 
             with Horizontal(classes="button-row"):
                 yield Button("Add User", id="add-btn", variant="success")
@@ -104,8 +104,8 @@ class UsersPage(Vertical):
     def _add_user(self):
         """Add a new user."""
         username = self.query_one("#username-input", Input).value.strip()
-        password = self.query_one("#password-input", Password).value
-        confirm = self.query_one("#confirm-input", Password).value
+        password = self.query_one("#password-input", Input).value
+        confirm = self.query_one("#confirm-input", Input).value
 
         if not username:
             self.notify("Username is required", severity="error")
@@ -117,12 +117,12 @@ class UsersPage(Vertical):
 
         success, message = self.user_manager.add_user(username, password)
         if success:
-            self.notify(message, severity="success")
+            self.notify(message, severity="information")
             self._refresh_users()
             # Clear inputs
             self.query_one("#username-input", Input).value = ""
-            self.query_one("#password-input", Password).value = ""
-            self.query_one("#confirm-input", Password).value = ""
+            self.query_one("#password-input", Input).value = ""
+            self.query_one("#confirm-input", Input).value = ""
         else:
             self.notify(message, severity="error")
 
@@ -136,7 +136,7 @@ class UsersPage(Vertical):
         username = table.get_row_at(table.cursor_row)[0]
         success, message = self.user_manager.delete_user(username)
         if success:
-            self.notify(message, severity="success")
+            self.notify(message, severity="information")
             self._refresh_users()
         else:
             self.notify(message, severity="error")

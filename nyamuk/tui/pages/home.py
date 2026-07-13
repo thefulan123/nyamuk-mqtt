@@ -157,17 +157,17 @@ class HomePage(Vertical):
         """Handle button presses."""
         if event.button.id == "start-btn":
             success, msg = self.broker_manager.start_broker()
-            self.notify(msg, severity="success" if success else "error")
+            self.notify(msg, severity="information" if success else "error")
             self._refresh_status()
         elif event.button.id == "stop-btn":
             success, msg = self.broker_manager.stop_broker()
-            self.notify(msg, severity="success" if success else "error")
+            self.notify(msg, severity="information" if success else "error")
             self._refresh_status()
         elif event.button.id == "restart-btn":
             success, msg = self.broker_manager.restart_broker()
-            self.notify(msg, severity="success" if success else "error")
+            self.notify(msg, severity="information" if success else "error")
             self._refresh_status()
         elif event.button.id == "delete-btn":
             success, msg = self.broker_manager.delete_broker()
-            self.notify(msg, severity="success" if success else "error")
+            self.notify(msg, severity="information" if success else "error")
             self._refresh_status()
