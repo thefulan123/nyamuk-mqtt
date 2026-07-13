@@ -65,6 +65,12 @@ class HomePage(Vertical):
         color: $warning;
         text-style: bold;
     }
+    .tester-hint {
+        color: $primary;
+        text-style: bold;
+        margin-top: 1;
+        text-align: center;
+    }
     """
 
     def __init__(self, **kwargs):
@@ -102,6 +108,8 @@ class HomePage(Vertical):
             yield Button("Stop", id="stop-btn", variant="error")
             yield Button("Restart", id="restart-btn", variant="warning")
             yield Button("Delete", id="delete-btn", variant="error")
+
+        yield Label("Press t to test MQTT pub/sub", classes="tester-hint")
 
     def on_mount(self) -> None:
         """Load broker status."""
