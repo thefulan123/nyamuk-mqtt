@@ -1,10 +1,9 @@
 """Mosquitto configuration file parser and manager."""
 
-import re
 import shutil
-from pathlib import Path
-from typing import Dict, List, Optional, Any, Tuple
 from datetime import datetime
+from pathlib import Path
+from typing import Any, Dict, List, Optional, Tuple
 
 from nyamuk.core.platform import Platform
 
@@ -25,7 +24,7 @@ class MosquittoManager:
         self._config = {}
         self._comments = []
 
-        with open(self.config_path, "r", encoding="utf-8") as f:
+        with open(self.config_path, encoding="utf-8") as f:
             for line in f:
                 line = line.strip()
                 if not line:
@@ -132,7 +131,7 @@ class MosquittoManager:
         """Get raw configuration lines with comments."""
         lines = []
         if self.config_path.exists():
-            with open(self.config_path, "r", encoding="utf-8") as f:
+            with open(self.config_path, encoding="utf-8") as f:
                 lines = [line.rstrip() for line in f.readlines()]
         return lines
 

@@ -1,7 +1,7 @@
 """Port Scanner - Find free ports for MQTT brokers."""
 
 import socket
-from typing import Optional, List
+from typing import List, Optional
 
 
 class PortScanner:
@@ -53,12 +53,12 @@ class PortScanner:
         # Try default MQTT port first
         if self.is_port_free(self.MQTT_PORT_START):
             return self.MQTT_PORT_START
-        
+
         # Find next free port
         free_port = self.find_free_port()
         if free_port:
             return free_port
-        
+
         # Fallback to 1883 (will fail if occupied)
         return self.MQTT_PORT_START
 

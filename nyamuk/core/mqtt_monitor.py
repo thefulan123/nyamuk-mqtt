@@ -1,11 +1,10 @@
 """Real-time MQTT monitoring using paho-mqtt."""
 
-import json
 import threading
 import time
-from typing import Callable, Dict, List, Optional, Any
-from datetime import datetime
 from collections import defaultdict
+from datetime import datetime
+from typing import Any, Callable, Dict, List, Optional
 
 try:
     import paho.mqtt.client as mqtt

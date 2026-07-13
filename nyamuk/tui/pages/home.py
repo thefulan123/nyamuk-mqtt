@@ -2,8 +2,7 @@
 
 from textual.app import ComposeResult
 from textual.containers import Container, Horizontal, Vertical
-from textual.widgets import Static, Label, Button
-from textual.reactive import reactive
+from textual.widgets import Button, Label
 
 from nyamuk.core.broker_manager import BrokerManager
 
@@ -109,7 +108,7 @@ class HomePage(Vertical):
     def _refresh_status(self):
         """Refresh broker status."""
         config = self.broker_manager.get_broker_config()
-        
+
         if not config:
             self.query_one("#status-text", Label).update("No broker configured")
             self.query_one("#status-text", Label).add_class("not-configured")
@@ -123,7 +122,7 @@ class HomePage(Vertical):
 
         # Get status
         status = self.broker_manager.get_status()
-        
+
         # Update status
         status_icon = "+" if status["status"] == "running" else "-"
         self.query_one("#status-text", Label).update(f"{status_icon} {status['status'].upper()}")

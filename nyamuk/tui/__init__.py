@@ -4,13 +4,12 @@ from textual.app import App, ComposeResult
 from textual.binding import Binding
 from textual.theme import Theme
 
-from nyamuk.tui.pages.home import HomePage
-from nyamuk.tui.pages.create import CreatePage
-from nyamuk.tui.pages.users import UsersPage
 from nyamuk.tui.pages.acl import ACLPage
 from nyamuk.tui.pages.config import ConfigPage
+from nyamuk.tui.pages.create import CreatePage
+from nyamuk.tui.pages.home import HomePage
 from nyamuk.tui.pages.logs import LogsPage
-
+from nyamuk.tui.pages.users import UsersPage
 
 NYAMUK_THEME = Theme(
     name="nyamuk",

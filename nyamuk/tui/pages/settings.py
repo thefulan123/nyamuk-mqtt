@@ -1,12 +1,11 @@
 """Settings Page - Application settings."""
 
+import json
+from pathlib import Path
+
 from textual.app import ComposeResult
 from textual.containers import Container, Horizontal, Vertical
-from textual.widgets import Static, Label, Input, Button, Select
-from textual.reactive import reactive
-
-from pathlib import Path
-import json
+from textual.widgets import Button, Input, Label, Select
 
 
 class SettingsPage(Vertical):
@@ -119,7 +118,7 @@ class SettingsPage(Vertical):
         """Load settings from config file."""
         try:
             if self.config_path.exists():
-                with open(self.config_path, "r", encoding="utf-8") as f:
+                with open(self.config_path, encoding="utf-8") as f:
                     config = json.load(f)
 
                 self.query_one("#broker-input", Input).value = config.get("mqtt_broker", "localhost")

@@ -2,8 +2,7 @@
 
 from textual.app import ComposeResult
 from textual.containers import Container, Horizontal, Vertical
-from textual.widgets import Static, Label, Input, Button, Switch, TextArea
-from textual.reactive import reactive
+from textual.widgets import Button, Input, Label, Switch, TextArea
 
 from nyamuk.core.mosquitto import MosquittoManager
 

@@ -1,8 +1,7 @@
 """Log viewer widget."""
 
-from textual.widgets import TextArea, Static, Label
-from textual.containers import Vertical
 from textual.app import ComposeResult
+from textual.widgets import Label, Static, TextArea
 
 
 class LogViewer(Static):

@@ -1,10 +1,9 @@
 """Docker container management for Mosquitto."""
 
+from typing import Any, Dict, List
+
 import docker
-import subprocess
-import json
-from typing import Optional, Dict, List, Any
-from docker.errors import DockerException, NotFound, APIError
+from docker.errors import DockerException, NotFound
 
 
 class DockerManager:
@@ -20,16 +19,16 @@ class DockerManager:
         if self._client is None:
             try:
                 self._client = docker.from_env()
-            except DockerException:
-                raise ConnectionError("Cannot connect to Docker daemon. Is Docker running?")
+            except DockerException as err:
+                raise ConnectionError("Cannot connect to Docker daemon. Is Docker running?") from err
         return self._client
 
     def get_container(self):
         """Get Mosquitto container."""
         try:
             return self.client.containers.get(self.container_name)
-        except NotFound:
-            raise FileNotFoundError(f"Container '{self.container_name}' not found")
+        except NotFound as err:
+            raise FileNotFoundError(f"Container '{self.container_name}' not found") from err
 
     def is_running(self) -> bool:
         """Check if Mosquitto container is running."""

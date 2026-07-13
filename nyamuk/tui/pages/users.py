@@ -2,8 +2,7 @@
 
 from textual.app import ComposeResult
 from textual.containers import Container, Horizontal, Vertical
-from textual.widgets import Static, Label, Input, Button, DataTable, Password
-from textual.reactive import reactive
+from textual.widgets import Button, DataTable, Input, Label, Password
 
 from nyamuk.core.user_manager import UserManager
 

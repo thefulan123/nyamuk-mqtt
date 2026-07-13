@@ -2,8 +2,7 @@
 
 from textual.app import ComposeResult
 from textual.containers import Container, Horizontal, Vertical
-from textual.widgets import Static, Label, Input, Button, DataTable, Select
-from textual.reactive import reactive
+from textual.widgets import Button, DataTable, Input, Label, Select
 
 from nyamuk.core.acl_manager import ACLManager
 

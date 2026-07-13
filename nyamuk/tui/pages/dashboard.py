@@ -1,13 +1,11 @@
 """Dashboard page - broker status overview."""
 
 from textual.app import ComposeResult
-from textual.containers import Container, Horizontal, Vertical
-from textual.widgets import Static, Label, DataTable
-from textual.reactive import reactive
+from textual.containers import Horizontal, Vertical
 from textual.timer import Timer
+from textual.widgets import DataTable, Label, Static
 
 from nyamuk.core.docker_manager import DockerManager
-from nyamuk.core.mqtt_monitor import MQTTMonitor
 
 
 class StatusCard(Static):

@@ -2,10 +2,9 @@
 
 from textual.app import ComposeResult
 from textual.containers import Container, Horizontal, Vertical
-from textual.widgets import Static, Label, TextArea, Select, Button, Input
-from textual.reactive import reactive
+from textual.widgets import Button, Input, Label, Select, TextArea
 
-from nyamuk.core.log_parser import LogParser, LogLevel
+from nyamuk.core.log_parser import LogLevel, LogParser
 
 
 class LogsPage(Vertical):

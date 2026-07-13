@@ -26,21 +26,21 @@ class ConfigGenerator:
     ) -> str:
         """Generate Mosquitto configuration content."""
         lines = []
-        
+
         # Listener
         lines.append(f"listener {port}")
         lines.append("")
-        
+
         # Authentication
         if allow_anonymous:
             lines.append("allow_anonymous true")
         else:
             lines.append("allow_anonymous false")
-        
+
         if password_file:
             lines.append(f"password_file {password_file}")
         lines.append("")
-        
+
         # Persistence
         if persistence:
             lines.append("persistence true")
@@ -48,31 +48,31 @@ class ConfigGenerator:
         else:
             lines.append("persistence false")
         lines.append("")
-        
+
         # Logging
         lines.append(f"log_dest {log_dest}")
         lines.append(f"log_type {log_type}")
         lines.append("")
-        
+
         # Connection limits
         if max_connections > 0:
             lines.append(f"max_connections {max_connections}")
-        
+
         if max_inflight_messages != 20:
             lines.append(f"max_inflight_messages {max_inflight_messages}")
-        
+
         if max_queued_messages != 1000:
             lines.append(f"max_queued_messages {max_queued_messages}")
-        
+
         if message_size_limit > 0:
             lines.append(f"message_size_limit {message_size_limit}")
         lines.append("")
-        
+
         # ACL
         if acl_file:
             lines.append(f"acl_file {acl_file}")
             lines.append("")
-        
+
         # TLS/SSL
         if cafile:
             lines.append(f"cafile {cafile}")
@@ -80,7 +80,7 @@ class ConfigGenerator:
             lines.append(f"certfile {certfile}")
         if keyfile:
             lines.append(f"keyfile {keyfile}")
-        
+
         return "\n".join(lines)
 
     def generate_basic(self, port: int = 1883, password_file: str = None) -> str:

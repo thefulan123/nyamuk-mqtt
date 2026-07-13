@@ -1,10 +1,8 @@
 """CLI interface for Nyamuk MQTT Manager - v2.0."""
 
-import click
-import json
 import sys
-from pathlib import Path
-from typing import Optional
+
+import click
 
 
 @click.group()
@@ -80,8 +78,8 @@ def create():
     if success:
         click.echo(f"[OK] {message}")
         click.echo("\nNext steps:")
-        click.echo(f"  1. Start broker: nyamuk start")
-        click.echo(f"  2. View connection info: nyamuk status")
+        click.echo("  1. Start broker: nyamuk start")
+        click.echo("  2. View connection info: nyamuk status")
     else:
         click.echo(f"[ERROR] {message}")
         sys.exit(1)

@@ -1,11 +1,9 @@
 """Mosquitto log file parser and viewer."""
 
 import re
-from pathlib import Path
-from typing import List, Dict, Optional, Tuple
-from datetime import datetime
 from dataclasses import dataclass
 from enum import Enum
+from typing import Dict, List, Optional, Tuple
 
 
 class LogLevel(Enum):

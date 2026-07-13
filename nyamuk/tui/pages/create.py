@@ -2,8 +2,7 @@
 
 from textual.app import ComposeResult
 from textual.containers import Container, Horizontal, Vertical
-from textual.widgets import Static, Label, Input, Button, Switch, Password
-from textual.reactive import reactive
+from textual.widgets import Button, Input, Label, Password, Switch
 
 from nyamuk.core.broker_manager import BrokerManager
 from nyamuk.core.port_scanner import PortScanner

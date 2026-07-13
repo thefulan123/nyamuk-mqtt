@@ -2,7 +2,7 @@
 
 import re
 import subprocess
-from typing import List, Dict, Optional, Tuple
+from typing import List, Tuple
 
 
 class UserManager:

@@ -1,17 +1,17 @@
 """Web Dashboard for Nyamuk MQTT Manager - v2.0."""
 
-from flask import Flask, render_template, request, jsonify, session, redirect, url_for
-from flask_socketio import SocketIO, emit
-import json
 import os
-from functools import wraps
 from datetime import datetime
+from functools import wraps
 
-from nyamuk.core.broker_manager import BrokerManager
-from nyamuk.core.user_manager import UserManager
+from flask import Flask, jsonify, redirect, render_template, request, session, url_for
+from flask_socketio import SocketIO, emit
+
 from nyamuk.core.acl_manager import ACLManager
+from nyamuk.core.broker_manager import BrokerManager
 from nyamuk.core.log_parser import LogParser
 from nyamuk.core.provisioning import ESP32Provisioning
+from nyamuk.core.user_manager import UserManager
 
 
 def create_app(config: dict = None) -> Flask:
@@ -177,7 +177,7 @@ def create_app(config: dict = None) -> Flask:
     def api_get_logs():
         """Get recent logs."""
         logs = log_parser.read_logs(tail=100)
-        return jsonify({"logs": [l.to_dict() for l in logs]})
+        return jsonify({"logs": [log.to_dict() for log in logs]})
 
     @app.route("/api/health")
     def api_health():

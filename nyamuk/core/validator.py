@@ -1,7 +1,8 @@
 """Configuration validation using Pydantic."""
 
-from typing import Optional, List, Dict, Any
-from pydantic import BaseModel, validator, Field
+from typing import Optional
+
+from pydantic import BaseModel, Field, validator
 
 
 class MosquittoConfig(BaseModel):
@@ -28,25 +29,32 @@ class MosquittoConfig(BaseModel):
     password_file: Optional[str] = Field(default=None, description="Password file path")
 
     @validator("listener")
+    @classmethod
     def validate_port(cls, v):
         if not 1 <= v <= 65535:
             raise ValueError("Port must be between 1-65535")
         return v
 
     @validator("allow_anonymous")
+    @classmethod
     def validate_auth(cls, v):
         if v:
             import warnings
-            warnings.warn("Warning: Anonymous access enabled. Consider disabling for production.")
+            warnings.warn(
+                "Warning: Anonymous access enabled. Consider disabling for production.",
+                stacklevel=2,
+            )
         return v
 
     @validator("max_inflight_messages")
+    @classmethod
     def validate_inflight(cls, v):
         if v < 0 and v != -1:
             raise ValueError("Max inflight messages must be >= 0 or -1 for unlimited")
         return v
 
     @validator("message_size_limit")
+    @classmethod
     def validate_message_size(cls, v):
         if v < 0:
             raise ValueError("Message size limit must be >= 0")
@@ -75,12 +83,14 @@ class NyamukConfig(BaseModel):
     auto_refresh_interval: int = Field(default=5, ge=1, description="Auto-refresh interval in seconds")
 
     @validator("web_port", "mqtt_port")
+    @classmethod
     def validate_port(cls, v):
         if not 1 <= v <= 65535:
             raise ValueError("Port must be between 1-65535")
         return v
 
     @validator("topic_prefix")
+    @classmethod
     def validate_topic_prefix(cls, v):
         if not v or "/" in v:
             raise ValueError("Topic prefix cannot be empty or contain '/'")

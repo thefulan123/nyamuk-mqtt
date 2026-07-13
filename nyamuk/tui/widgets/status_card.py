@@ -1,8 +1,7 @@
 """Status card widget."""
 
-from textual.widgets import Static, Label
-from textual.containers import Vertical
 from textual.app import ComposeResult
+from textual.widgets import Label, Static
 
 
 class StatusCard(Static):
